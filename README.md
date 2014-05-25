@@ -1,4 +1,6 @@
-smarvel
+S2S
 =======
 
-Let's make our travel smart
+'S2S' means school to society, it is
+a platform helps students undertand society
+a bridge connects students to society

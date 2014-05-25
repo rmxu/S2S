@@ -55,14 +55,14 @@
 	dbtarget('w',$dbServs);
 
 	//留言
-	$sql = "insert into $t_message(`from_user_id`,`from_user_name`,`from_user_ico`,`to_user_id`,`message`,`add_time`) values($from_user_id,'$from_user_name','$from_user_ico',$to_user_id,'$message','".constant('NOWTIME')."')";
+	$sql = "insert into $t_message(`from_user_id`,`from_user_name`,`from_user_ico`,`to_user_id`,`message`,`add_time`) values($from_user_id,'$from_user_name','$from_user_ico',$to_user_id,'$message',now())";
 	if($dbo -> exeUpdate($sql)){
 		if($to_user_id!=$from_user_id){
 			increase_integral($dbo,$int_com_msg,$from_user_id);
 			api_proxy("message_set",$to_user_id,$mb_langpackage->mb_remind,"modules.php?app=msgboard_more",0,7,"remind");
 		}
 		if($restore==1){
-			$sql="insert into $t_message(`from_user_id`,`from_user_name`,`from_user_ico`,`to_user_id`,`message`,`add_time`) values($from_user_id,'$from_user_name','$from_user_ico',$from_user_id,'$message','".constant('NOWTIME')."')";
+			$sql="insert into $t_message(`from_user_id`,`from_user_name`,`from_user_ico`,`to_user_id`,`message`,`add_time`) values($from_user_id,'$from_user_name','$from_user_ico',$from_user_id,'$message',now())";
 			$dbo->exeUpdate($sql);
 		}
 		action_return($result_type,"","-1");

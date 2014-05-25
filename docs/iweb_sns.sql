@@ -18,7 +18,7 @@ CREATE TABLE `isns_tag` (
   `count` mediumint(8) default 0,
   `hot` tinyint(2) default 0,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `name` (`name`)
+  KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `isns_tag_relation`;
@@ -408,7 +408,6 @@ CREATE TABLE `isns_pals_mine` (
   `add_time` datetime default NULL,
   `pals_ico` varchar(150) default NULL,
   `accepted` tinyint(2) NOT NULL default '0',
-  `active_time` datetime default NULL,
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `pals_id` (`pals_id`),
@@ -570,6 +569,7 @@ CREATE TABLE `isns_polluser` (
   `option` text,
   `dateline` datetime default NULL,
   `anony` tinyint(2) NOT NULL default '0',
+  PRIMARY KEY  (`uid`),
   KEY `pid` (`pid`,`dateline`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -747,10 +747,12 @@ DROP TABLE IF EXISTS `isns_users`;
 
 CREATE TABLE `isns_users` (
   `user_id` mediumint(8) unsigned NOT NULL auto_increment,
+  `user_marry` tinyint(2) default NULL,
   `user_email` varchar(50) default NULL,
   `user_name` varchar(20) default NULL,
   `user_pws` char(32) default NULL,
   `user_sex` tinyint(2) default NULL,
+  `user_call` varchar(20) default NULL,
   `birth_province` varchar(30) default NULL,
   `birth_city` varchar(30) default NULL,
   `reside_province` varchar(30) default NULL,
@@ -761,6 +763,8 @@ CREATE TABLE `isns_users` (
   `birth_year` char(6) default NULL,
   `birth_month` char(4) default NULL,
   `birth_day` char(4) default NULL,
+  `user_blood` char(2) default NULL,
+  `user_qq` varchar(15) default NULL,
   `creat_group` varchar(150) default NULL,
   `join_group` varchar(150) default NULL,
   `guest_num` mediumint(8) unsigned default '0',
@@ -781,19 +785,9 @@ CREATE TABLE `isns_users` (
   `use_apps` varchar( 1000 ) default NULL,
   `user_group` varchar( 30 ) default 'base',
   `forget_pass` varchar(50) default NULL,
-  `activation_id` int(8) DEFAULT -1 COMMENT '激活码id值',
   PRIMARY KEY  (`user_id`),
   UNIQUE KEY `user_email` (`user_email`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `isns_user_activation`;
-
-CREATE TABLE IF NOT EXISTS `isns_user_activation` (
-  `id` int(8) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `time` datetime NOT NULL COMMENT '时间戳',
-  `activation_code` varchar(100) NOT NULL COMMENT '激活码',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='用户激活注册表' AUTO_INCREMENT=1 ;
 
 DROP TABLE IF EXISTS `isns_remind`;
 
@@ -825,193 +819,6 @@ CREATE TABLE `isns_invite_code` (
   UNIQUE KEY `code_txt` (`code_txt`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-DROP TABLE IF EXISTS `isns_event`;
-
-CREATE TABLE `isns_event` (
-  `event_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_name` varchar(15) NOT NULL DEFAULT '',
-  `dateline` int(10) unsigned NOT NULL DEFAULT '0',
-  `title` varchar(80) NOT NULL DEFAULT '',
-  `type_id` smallint(6) unsigned NOT NULL DEFAULT '0',
-  `province` varchar(20) NOT NULL DEFAULT '',
-  `city` varchar(20) NOT NULL DEFAULT '',
-  `location` varchar(80) NOT NULL DEFAULT '',
-  `poster` varchar(60) NOT NULL DEFAULT '',
-  `poster_thumb` varchar(60) NOT NULL DEFAULT '',
-  `thumb` tinyint(1) NOT NULL DEFAULT '0',
-  `remote` tinyint(1) NOT NULL DEFAULT '0',
-  `deadline` int(10) unsigned NOT NULL DEFAULT '0',
-  `start_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `end_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `public` tinyint(3) NOT NULL DEFAULT '0',
-  `member_num` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `follow_num` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `view_num` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `grade` tinyint(3) NOT NULL DEFAULT '0',
-  `photo_num` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `update_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `detail` text NOT NULL,
-  `template` varchar(255) NOT NULL DEFAULT '',
-  `limit_num` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `verify` tinyint(1) NOT NULL DEFAULT '0',
-  `allow_pic` tinyint(1) NOT NULL DEFAULT '0',
-  `allow_post` tinyint(1) NOT NULL DEFAULT '0',
-  `allow_invite` tinyint(1) NOT NULL DEFAULT '0',
-  `allow_fellow` tinyint(1) NOT NULL DEFAULT '0',
-  `is_pass` tinyint(1) NOT NULL DEFAULT '1',
-  `comments` int(5) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`event_id`),
-  KEY `grade` (`grade`),
-  KEY `member_num` (`member_num`),
-  KEY `user_id` (`user_id`,`event_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-DROP TABLE IF EXISTS `isns_event_type`;
-
-CREATE TABLE `isns_event_type` (
-  `type_id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
-  `type_name` varchar(80) NOT NULL DEFAULT '',
-  `poster` varchar(100) NOT NULL DEFAULT '',
-  `poster_thumb` varchar(100) NOT NULL DEFAULT '',
-  `template` text NOT NULL,
-  `display_order` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`type_id`),
-  UNIQUE KEY `type_name` (`type_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `isns_event_invite`;
-
-CREATE TABLE `isns_event_invite` (
-  `event_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_name` varchar(15) NOT NULL DEFAULT '',
-  `to_user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `to_user_name` char(15) NOT NULL DEFAULT '',
-  `dateline` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`event_id`,`to_user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `isns_event_members`;
-
-CREATE TABLE `isns_event_members` (
-  `event_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_name` varchar(15) NOT NULL DEFAULT '',
-  `user_sex` tinyint(2) NOT NULL DEFAULT '0',
-  `user_ico` varchar(150) NOT NULL DEFAULT '',
-  `reside_province` varchar(30) NOT NULL DEFAULT '',
-  `reside_city` varchar(30) NOT NULL DEFAULT '',
-  `dateline` int(10) unsigned NOT NULL DEFAULT '0',
-  `status` tinyint(4) NOT NULL DEFAULT '0',
-  `fellow` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `template` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`event_id`,`user_id`),
-  KEY `user_id` (`user_id`,`dateline`),
-  KEY `event_id` (`event_id`,`status`,`dateline`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `isns_event_comment`;
-
-CREATE TABLE `isns_event_comment` (
-  `comment_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `visitor_ico` varchar(150) DEFAULT NULL,
-  `is_hidden` tinyint(2) NOT NULL DEFAULT '0',
-  `visitor_id` mediumint(8) unsigned NOT NULL,
-  `event_id` mediumint(8) unsigned NOT NULL,
-  `host_id` mediumint(8) unsigned NOT NULL,
-  `visitor_name` varchar(20) DEFAULT NULL,
-  `content` text,
-  `add_time` datetime DEFAULT NULL,
-  `readed` tinyint(2) DEFAULT '0',
-  PRIMARY KEY (`comment_id`),
-  KEY `event_id` (`event_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `isns_event_photo`;
-
-CREATE TABLE `isns_event_photo` (
-  `photo_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `photo_src` varchar(200) DEFAULT NULL,
-  `photo_name` varchar(20) NOT NULL,
-  `photo_information` varchar(200) DEFAULT NULL,
-  `photo_thumb_src` varchar(200) DEFAULT NULL,
-  `event_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `user_name` varchar(20) NOT NULL DEFAULT '',
-  `add_time` datetime NULL,
-  PRIMARY KEY (`photo_id`),
-  KEY `event_id` (`event_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `isns_ask`;
-
-CREATE TABLE `isns_ask` (
-  `ask_id` int(8) unsigned NOT NULL auto_increment,
-  `user_id` mediumint(8) NOT NULL COMMENT '提问者id',
-  `user_name` varchar(15) NOT NULL COMMENT '提问者名字',
-  `title` varchar(200) NOT NULL COMMENT '问题',
-  `detail` text NULL COMMENT '详细',
-  `replenish` text NULL COMMENT '问题补充',
-  `type_id` mediumint(6) NOT NULL COMMENT '问题分类id',
-  `type_name` varchar(20) NOT NULL COMMENT '类别名',
-  `reward` smallint(8) NOT NULL default '0' COMMENT '悬赏积分',
-  `reply_num` smallint(8) NOT NULL default '0' COMMENT '回答数量',
-  `view_num` smallint(8) NOT NULL default '0' COMMENT '查看次数',
-  `status` tinyint(2) NOT NULL default '0' COMMENT '问题状态 0待解决 1已解决',
-  `add_time` datetime NOT NULL COMMENT '提问时间',
-  `reply_time` datetime default NULL COMMENT '最后回答时间',
-  `solved_time` datetime default NULL COMMENT '解决时间',
-  PRIMARY KEY  (`ask_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `isns_ask_reply`;
-
-CREATE TABLE `isns_ask_reply` (
-  `reply_id` int(8) unsigned NOT NULL auto_increment,
-  `ask_id` int(8) NOT NULL COMMENT '问题id',
-  `user_id` mediumint(8) NOT NULL COMMENT '回答者id',
-  `user_name` varchar(15) NOT NULL COMMENT '回答者名字',
-  `user_ico` varchar(150) NOT NULL COMMENT '回答者头像',
-  `content` text NOT NULL COMMENT '回答内容',
-  `add_time` datetime NOT NULL COMMENT '回答时间',
-  `edit_time` datetime NULL COMMENT '修改时间',
-  `is_answer` tinyint(2) NOT NULL default '0' COMMENT '是否满意答案 0否 1是',
-  PRIMARY KEY  (`reply_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='回答表' AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `isns_ask_type`;
-
-CREATE TABLE `isns_ask_type` (
-  `id` mediumint(8) NOT NULL auto_increment,
-  `name` varchar(20) default NULL,
-  `order_num` mediumint(8) unsigned default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-DROP TABLE IF EXISTS `isns_user_info`;
-
-CREATE TABLE `isns_user_info` (
-  `id` int(10) unsigned NOT NULL auto_increment COMMENT 'ID',
-  `user_id` int(10) NOT NULL default '0' COMMENT 'user表ID',
-  `info_id` int(10) NOT NULL default '0' COMMENT '信息表ID',
-  `info_value` text COMMENT '信息值',
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
-DROP TABLE IF EXISTS `isns_user_information`;
-
-CREATE TABLE `isns_user_information` (
-  `info_id` int(10) unsigned NOT NULL auto_increment COMMENT '信息id',
-  `info_name` varchar(255) NOT NULL COMMENT '信息名称',
-  `input_type` tinyint(1) NOT NULL default '0' COMMENT '信息input类型 0:text,1:select,2:radio,3:checkbox',
-  `info_values` text COMMENT '信息值 一行代表一个',
-  `sort` tinyint(1) NOT NULL default '0' COMMENT '显示排序',
-  PRIMARY KEY  (`info_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-
 INSERT INTO `isns_group_type` (`id`, `order_num`, `name`) VALUES
 (1, 1, '时尚生活'),
 (2, 2, '影视天地'),
@@ -1033,26 +840,3 @@ INSERT INTO `isns_pals_def_sort` (`id`, `order_num`, `name`) VALUES
 (1, 1, '亲朋'),
 (2, 2, '好友'),
 (3, 3, '同学');
-
-INSERT INTO `isns_event_type` (`type_id`, `type_name`, `poster`, `poster_thumb`, `template`, `display_order`) VALUES
-(1, '生活/聚会', '0', '', '<P><BR>费用说明:<BR>集合地点:<BR>着装要求:<BR>联系方式:<BR>注意事项:<BR></P>', 1),
-(2, '出行/旅游', '', '', '<P>路线说明:<BR>费用说明:<BR>装备要求:<BR>交通工具:<BR>集合地点:<BR>联系方式:<BR>注意事项:<BR></P>', 2),
-(3, '比赛/运动', '0', '', '<P>费用说明：<BR>集合地点：<BR>着装要求：<BR>场地介绍：<BR>联系方式：<BR>注意事项：<BR></P>', 3),
-(4, '电影/演出', '', '', '剧情介绍：<BR>费用说明：<BR>集合地点：<BR>联系方式：<BR>注意事项:<BR>', 4),
-(5, '教育/讲座', '', '', '主办单位：<BR>活动主题：<BR>费用说明：<BR>集合地点：<BR>联系方式：<BR>注意事项：<BR>', 5),
-(6, '其它', '0', '', '', 6);
-
-INSERT INTO `isns_ask_type` (`id`, `name`, `order_num`) VALUES
-(1, '创业起步', 1),
-(2, '市场营销', 2),
-(3, '企业管理', 3),
-(4, '财务/资本', 4),
-(5, '法律咨询', 5),
-(6, '人力资源', 6),
-(7, '工作/生活', 7),
-(9, '其他', 8);
-
-INSERT INTO `isns_user_information` (`info_id`, `info_name`, `input_type`, `info_values`, `sort`) VALUES
-(1, '婚恋状态', 1, '保密\r\n单身\r\n非单身', 0),
-(2, '血型', 1, '保密\r\nA\r\nB\r\nO\r\nAB', 0),
-(3, 'QQ', 0, '', 0);

@@ -36,9 +36,9 @@
 	$username=$user_row['user_name'];
 
 //所撤销的管理员不存在
-	if(!strpos(",,$group_manager_id,",",$userid,")){
+	if(!preg_match("/,$userid,/",$group_manager_id)){
 		action_return(0,$g_langpackage->g_no_manager,"-1");
-	}
+		}
 
 	$group_manager=preg_replace("/\|$username\|/","|",$group_manager);
 	$group_manager_id=preg_replace("/,$userid,/",",",$group_manager_id);

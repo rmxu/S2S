@@ -1,7 +1,7 @@
 <?php
 //引入公共方法
 	require_once("foundation/fsqlseletiem_set.php");
-
+	
 //引入语言包
 	$mp_langpackage=new mypalslp;
 
@@ -19,7 +19,7 @@
 //获取我的好友列表字符串
 function getMypals($dbo,$user_id,$t_mypals){
 	$mypals_id='';
-	$sql="select pals_id from $t_mypals where user_id='$user_id' and accepted>='1' order by active_time desc";
+	$sql="select pals_id from $t_mypals where user_id='$user_id' and accepted>='1'";
 	$mypals_rs=$dbo->getRs($sql);
 	$comma_str='';
 	$i=0;
@@ -52,27 +52,27 @@ function getPals_mine_base($dbo,$select_items,$t_pals,$userid,$accpara,$limit){
 }
 
 function get_pals_sex($pals_sex){
-
+	
 	global $lp_woman;
 	global $lp_man;
-
+	
   if($pals_sex=="0"){ $pSexStr=$lp_woman; }
   if($pals_sex=="1"){ $pSexStr=$lp_man; }
-
+  
   return $pSexStr;
 }
 
 function get_TP_pals_sex($pals_sex){
-
+	
 	global $lp_t_man;
-	global $lp_t_woman;
+	global $lp_t_woman;	
 
   if($pals_sex=="0"){ $pSexTpStr=$lp_t_woman; }
   if($pals_sex=="1"){ $pSexTpStr=$lp_t_man; }
-
+  
   return $pSexTpStr;
 }
-
+	
 function get_pals_state($accepted){
 	global $lp_wait;
 	global $lp_other;
@@ -92,7 +92,7 @@ function get_pals_reside($reside_province,$reside_city){
 	}
 	return $reside_str;
 }
-
+	
 function get_pals_birth($birth_province,$birth_city){
 	global $lp_unset;
 	$birth_str=$birth_province.",".$birth_city;
@@ -101,4 +101,4 @@ function get_pals_birth($birth_province,$birth_city){
 	}
 	return $birth_str;
 }
-?>
+?>    

@@ -1,5 +1,5 @@
 <?php
-$LAST_DELAY_TIME=1290160187;
+$LAST_DELAY_TIME=1274927025;
 function delay($delay_time){
 	global $LAST_DELAY_TIME;
 	$now_time=time();

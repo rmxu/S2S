@@ -1,20 +1,47 @@
 <?php
 //获得文本部分内容
-function get_lentxt($txtstr,$maxlen=180){
-	$txtstr=strip_tags($txtstr);
-	if(strlen($txtstr) > $maxlen){
-	  return sub_str(filt_word($txtstr),$maxlen).'...';
-	}else{
-	  return filt_word($txtstr);
-	}
+function get_lentxt($txtstr,$maxlen){
+	 if(strlen($txtstr)>$maxlen){
+	 	  return substr(filt_word($txtstr),0,$maxlen).'...';
+	 }else{
+	 	  return filt_word($txtstr);
+	 }
 }
 
 function is_utf8($word){
-	if(preg_match("/^([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){1}/",$word) == true || preg_match("/([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){1}$/",$word) == true || preg_match("/([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){2,}/",$word) == true){
-		return true;
-	}else{
-		return false;
+	if(preg_match("/^([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){1}/",$word) == true || preg_match("/([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){1}$/",$word) == true || preg_match("/([".chr(228)."-".chr(233)."]{1}[".chr(128)."-".chr(191)."]{1}[".chr(128)."-".chr(191)."]{1}){2,}/",$word) == true){ 
+		return true; 
+	}else{ 
+		return false; 
 	}
+}
+
+function get_short_txt($str){
+	$str=strip_tags($str);
+	return get_lentxt(trim($str),180);
+}
+
+function get_blog_lentxt($ublog_txt){
+	$pic_blog=array();
+	$pic_share=array();
+	$pic='';
+	preg_match("/<img src=(.*) onload=fixImage\(this,400,0\) classId=\\\\\"\d*\\\\\" \/>/",$ublog_txt,$pic_blog);
+	if(!empty($pic_blog)){
+		$pic=$pic_blog[0];
+	}
+	if($pic==''){
+		preg_match("/<img src=(.*) onload=fixImage\(this,400,0\) classId=\"\d*\" \/>/",$ublog_txt,$pic_share);
+		if(!empty($pic_share)){
+			$pic=$pic_share[0];
+		}
+	}
+	
+	if($pic!=''){
+		$pic="<div style=\"float:left\">".$pic."</div>";
+	}
+	$ublog_txt=strip_tags($ublog_txt);
+	$ublog_txt=$pic.get_lentxt($ublog_txt,180);
+	return $ublog_txt;
 }
 
 //格式化日期文本函数
@@ -24,7 +51,7 @@ function format_datetime_txt($event_time){
   $nday=date("d", time());
   $nhour=date("H", time());
   $nminute=date("i", time());
-
+  
   $etimeArr=explode('-',$event_time);
   $eyear=$etimeArr[0];
   $emonth=$etimeArr[1];
@@ -68,7 +95,7 @@ function format_datetime_short($event_time){
   $nday=date("d", time());
   $nhour=date("H", time());
   $nminute=date("i", time());
-
+  
   $etimeArr=explode('-',$event_time);
   $eyear=$etimeArr[0];
   $emonth=$etimeArr[1];
@@ -140,7 +167,7 @@ function conver_time($second){
 	}
 	if($leave_time==$second){
 		$result_str='1分钟以内';
-	}
+	}	
 	return $result_str;
 }
 
@@ -166,6 +193,15 @@ function brithday_format($y,$m,$d){
     return $tmp;
 }
 
+function get_thirdperson($usex=1){
+	 if($usex==0){
+	 	 return "她";
+	 }	 
+	 if($usex==1){
+	 	 return "他";
+	 }
+}
+
 function radio_checked($input_val,$rs_val){
 	if($input_val==$rs_val){
 	  return ' checked ';
@@ -184,14 +220,14 @@ function newline($num){
 }
 
 //取得后缀名
-function get_ext($file_name)
+function get_ext($file_name) 
 {
-	$extend=explode("." , $file_name);
+	$extend=explode("." , $file_name); 
 	$va=count($extend)-1;
 	$ext_name=trim($extend[$va]);
 	if($ext_name=='jpeg'){
 		 $ext_name='jpg';
 	}
-	return $ext_name;
+	return $ext_name; 
 }
 ?>

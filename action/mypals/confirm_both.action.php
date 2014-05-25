@@ -31,7 +31,7 @@
 	  	$res_rpid=$req_user_row["from_id"];
 	  	$res_ico=$req_user_row["req_ico"];
 
-	  	$sql="insert into $t_mypals (user_id,pals_id,pals_name,pals_sex,add_time,pals_ico,accepted) value($user_id,$res_uid,'$res_uname','$res_usex','".constant('NOWTIME')."','$res_ico',2)";
+	  	$sql="insert into $t_mypals (user_id,pals_id,pals_name,pals_sex,add_time,pals_ico,accepted) value($user_id,$res_uid,'$res_uname','$res_usex',NOW(),'$res_ico',2)";
 	  	$dbo->exeUpdate($sql);
 	}
 	else{

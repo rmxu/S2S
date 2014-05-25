@@ -17,7 +17,7 @@
 	//读写分离定义函数
 	dbtarget('w',$dbServs);
 	
-	$sql = "update $t_album set `album_name`='$album_name',`user_id`=$user_id,`album_info`='$album_information',`tag`='$tag',`update_time`='".constant('NOWTIME')."',`privacy`='$privacy' where album_id=$album_id";
+	$sql = "update $t_album set `album_name`='$album_name',`user_id`=$user_id,`album_info`='$album_information',`tag`='$tag',`update_time`=NOW(),`privacy`='$privacy' where album_id=$album_id";
 	$dbo -> exeUpdate($sql);
 	//回应信息
 	action_return(1,"","");

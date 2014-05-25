@@ -12,26 +12,20 @@ $copyright="2010版权所有www.jooyea.net";
 $domainRemark="";
 $offLine=0;
 $adminEmail="";
-$siteDomain="http://{$_SERVER['HTTP_HOST']}/iwebsns1.1.0/";
+$siteDomain="http://{$_SERVER['HTTP_HOST']}/iwebsns/";
 $skinUrl="default/jooyea";
 $tplAct="default";
-$compileType="debug";
+$compileType="server";
 $indexFile="index.php";
-$urlRewrite=0;
+$urlRewrite=2;
 $inviteCode=0;
 $inviteCodeLength=8;
 $inviteCodeValue=1;
 $allowReg=1;
 $inviteCodeLife=72;
-$mailCodeLifeDay=7;
-$mailCodeLifeHour=0;
-$mailActivation=0;
 
 //时区设置
 date_default_timezone_set ("Asia/Shanghai");
-
-//当前时间
-defined('NOWTIME') or define('NOWTIME',date('Y-m-d H:i:s',time()));
 
 //支持库配置
 $baseLibsPath="iweb_mini_lib/";
@@ -46,7 +40,7 @@ $delayTime=5;
 $ctrlCache=1;
 
 //缓存更新延时设置,单位为秒
-$cache_update_delay_time=1;
+$cache_update_delay_time=5;
 
 //出生年份范围
 $setMinYear=1950;

@@ -2,7 +2,6 @@
 //引入语言包
 	$pu_langpackage=new publiclp;
 	$res_langpackage=new restore;
-	$ef_langpackage=new event_frontlp;
 	$RefreshType='ajax';
 //引入公共方法
 	require("foundation/aintegral.php");
@@ -13,7 +12,7 @@
 	$visitor_id=get_sess_userid();
 	$visitor_name=get_sess_username();
 	$visitor_ico=get_sess_userico();
-	$content=html_filter(get_argp('CONTENT'));
+	$content=short_check(get_argp('CONTENT'));
 	$host_id=intval(get_argg('holder_id'));
 	$to_userid=intval(get_argg('to_userid'));
 	$mod_id=intval(get_argg('mod_id'));
@@ -50,9 +49,6 @@
 
   $t_users=$tablePreStr."users";
   $t_mypals=$tablePreStr."pals_mine";
-
-  $t_event=$tablePreStr."event";
-  $t_event_comment=$tablePreStr."event_comment";
 
   $dbo=new dbex();
 
@@ -141,18 +137,6 @@
 			$whole=$res_langpackage->res_mood;
 			$link="home.php?h=$host_id&app=mood_more&remind=1&mod=$mod_id";
 			break;
-			case "7":
-			$t_table=$t_event;
-			$t_table_com=$t_event_comment;
-			$mod_col_insert="event_id";
-			$mod_value_insert=$mod_id;
-			$num_col="event_id";
-			$event_info=api_proxy("event_self_by_eid","title",$mod_id);
-			$title=$event_info['title'];
-			$whole=$res_langpackage->res_event;
-			$link="home.php?h=$host_id&app=event_space&event_id=$mod_id";
-			break;
-
 			default:
 			echo 'error';
 			break;
@@ -174,7 +158,7 @@ if($host_id!=$visitor_id){
 
 	dbtarget('w',$dbServs);
 	$last_id='';
-	$sql="insert into $t_table_com (visitor_id,visitor_name,host_id,$mod_col_insert,add_time,`content`,visitor_ico,is_hidden) values ($visitor_id,'$visitor_name',$host_id,$mod_value_insert,'".constant('NOWTIME')."','$content','$visitor_ico',$hidden_talk)";
+	$sql="insert into $t_table_com (visitor_id,visitor_name,host_id,$mod_col_insert,add_time,`content`,visitor_ico,is_hidden) values ($visitor_id,'$visitor_name',$host_id,$mod_value_insert,now(),'$content','$visitor_ico',$hidden_talk)";
 	if($dbo->exeUpdate($sql)){
 		$last_id=mysql_insert_id();
 		$sql="update $t_table set comments=comments+1 where $num_col=$mod_id";
@@ -210,3 +194,4 @@ if($host_id!=$visitor_id){
 			</div>';
 	}
 ?>
+

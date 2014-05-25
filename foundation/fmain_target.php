@@ -97,13 +97,6 @@ function transRewrite(){
 					isset($request_arr[3]) && $_GET['user_id']=$_GET['h']=$request_arr[3];
 				}
 				break;
-				case "community_space":
-				if($script_name=='modules.php'){
-					isset($request_arr[0]) && $_GET['app']=$request_arr[0];
-					isset($request_arr[1]) && $_GET['comm_id']=$request_arr[1];
-					isset($request_arr[2]) && $_GET['user_id']=$request_arr[2];
-				}
-				break;
 			}
 		}
 	}
@@ -112,32 +105,15 @@ function transRewrite(){
 function rewrite_fun($url){
 	global $urlRewrite;
 	if($urlRewrite){
-		$url_type_str='/';
-		if($urlRewrite==2){
-			$url_type_str='.php/';
+		$url=str_replace(array('?h=','?app=','&app=','&id=','&user_id=','&photo_id=','&album_id=','&p_id='),'/',$url);
+		if($urlRewrite==1){
+			$url=str_replace('.php','',$url);
 		}
-		$str_url=str_replace(array("?","&"),"/",strstr($url,'.php?'));
-		$url_array=explode('/',$str_url);
-		$result_url='';
-		foreach($url_array as $rs){
-			$result_url.=strstr($rs,'=');
-		}
-		$result_url=strtr($result_url,'=','/');
-		if(substr($result_url,0,1)=='/'){
-			$result_url=substr($result_url,1);
-		}
-		if(strpos(','.$url,'home.php')){
-			$result_url='home'.$url_type_str.$result_url;
-		}else if(strpos(','.$url,'modules.php')&&$urlRewrite==2){
-			$result_url='modules'.$url_type_str.$result_url;
-		}
-		return $result_url;
-	}else{
-		return $url;
 	}
+	return $url;
 }
 
-if(isset($urlRewrite)==2){
+if($urlRewrite==2){
 	transRewrite();
 }
 ?>

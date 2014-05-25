@@ -1,5 +1,21 @@
 <?php
 //post,get对象过滤通用函数
+function login_check($post){
+   $MaxSlen=30;//限制登陆验证输入项最多20个字符
+   if (!get_magic_quotes_gpc())    // 判断magic_quotes_gpc是否为打开
+   {
+      $post=addslashes($post);    // 进行magic_quotes_gpc没有打开的情况对提交数据的过滤
+   }
+   $post = LenLimit($post,$MaxSlen);
+   $post=preg_replace("/　+/","",trim(str_replace(" ","",$post)));
+   $post=cleanHex($post);
+   if (strpos($post,"=")||strpos($post,"'")||strpos($post,"\\")||strpos($post,"*")||strpos($post,"#")){
+       return false;
+   }else{
+       return true;
+   }
+}
+
 function long_check($post)
 {
    $MaxSlen=3000;//限制较长输入项最多3000个字符
@@ -15,7 +31,7 @@ function long_check($post)
 }
 
 function big_check($post){
-	$MaxSlen=20000;//限制大输入项最多20000个字符
+	$MaxSlen=30000;//限制大输入项最多30000个字符
 	if (!get_magic_quotes_gpc())    // 判断magic_quotes_gpc是否为打开
 	{
 	$post = addslashes($post);    // 进行magic_quotes_gpc没有打开的情况对提交数据的过滤
@@ -36,14 +52,8 @@ function short_check($str)
    }
 		$str = LenLimit($str,$MaxSlen);
 		$str = str_replace(array("\'","\\","#"),"",$str);
-		if($str!=''){
-			$str= htmlspecialchars($str);
-		}
+		$str= htmlspecialchars($str);
 		return preg_replace("/　+/","",trim($str));
-}
-
-function filter_script($str){
-	return preg_replace(array('/<\s*script/','/<\s*\/\s*script\s*>/',"/<\?/","/\?>/"),array("&lt;script","&lt;/script&gt;","&lt;?","?&gt;"),$str);
 }
 
 //过滤16进制
@@ -236,49 +246,6 @@ function sub_str($str, $length = 0, $append = true, $charset='utf8') {
 		$newstr .= '..';
 	}
 	return $newstr;
-}
-
-function str_addslashes($str) {
-	if(!get_magic_quotes_gpc()) {
-		if(is_array($str)) {
-			foreach($str as $key => $val) {
-				$str[$key] = str_addslashes($val);
-			}
-		} else {
-			$str = addslashes($str);
-		}
-	}
-	return $str;
-}
-
-function str_filter($str,$max_num='20000'){
-	if(is_array($str)){
-		foreach($str as $key => $val) {
-			$str[$key] = str_filter($val,$max_num);
-		}
-	}else{
-		$str = LenLimit($str,$max_num);
-		$str = trim($str);
-		$str = preg_replace('/&amp;((#(\d{3,5}|x[a-fA-F0-9]{4}));)/', '&\\1',htmlspecialchars($str));
-		$str = str_replace("　","",$str);
-	}
-	return str_addslashes($str);
-}
-
-function html_filter($str,$max_num='20000'){
-	if(is_array($str)){
-		foreach($str as $key => $val){
-			$str[$key] = html_filter($val);
-		}
-	}else{
-		$str = LenLimit($str,$max_num);
-		$str = trim($str);
-		$tran_before = array('/<\s*a[^>]*href\s*=\s*[\'\"]?(javascript|vbscript)[^>]*>/i','/<([^>]*)on(\w)+=[^>]*>/i','/<\s*\/?\s*(script|i?frame)[^>]*\s*>/i');
-		$tran_after = array('<a href="#">','<$1>','&lt;$1&gt;');
-		$str = preg_replace($tran_before,$tran_after,$str);
-		$str = str_replace("　","",$str);
-	}
-	return str_addslashes($str);
 }
 
 ?>

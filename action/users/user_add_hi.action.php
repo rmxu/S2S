@@ -27,11 +27,11 @@
 		echo $hi_langpackage->hi_limit;
 		exit;		
 	}
-	$sql="insert into $t_hi(from_user_id,from_user_name,from_user_ico,hi,to_user_id,add_time) value($from_user_id,'$from_user_name','$from_user_ico',$hi,$to_user_id,'".constant('NOWTIME')."')";
+	$sql="insert into $t_hi(from_user_id,from_user_name,from_user_ico,hi,to_user_id,add_time) value($from_user_id,'$from_user_name','$from_user_ico',$hi,$to_user_id,now())";
 	if($dbo->exeUpdate($sql)){
 		api_proxy("message_set",$to_user_id,$hi_langpackage->hi_remind,"modules.php?app=user_hi",0,4,"remind");
 		echo "success";
-	}else{		
+	}else{
 		echo $hi_langpackage->hi_los;
 	}
 	

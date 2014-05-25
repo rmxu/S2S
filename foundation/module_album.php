@@ -44,14 +44,13 @@ function src_wh($size0,$size1,$photo_thumb_src){
 
 function do_url($type,$photo_src,$user_id){
 	global $siteDomain;
-	$do_url="window.location.href='modules.php?app=user_ico_cut&photo_url=".$photo_src."'";
+	$do_url="javascript:window.location.href='modules.php?app=user_ico_cut&photo_url=".$photo_src."'";
 	if($type!='' && $type=="blog_photo"){
-		$do_url="AddContentImg('".$photo_src."',0);";
+		$do_url="javascript:AddContentImg('".$photo_src."',0);";
 	}
 	if($type!='' && $type=="index_pic"){
-		$do_url="window.location.href='".$siteDomain."sysadmin/pic_cut.php?photo_url=".$photo_src."&user_id=".$user_id."'";
+		$do_url="javascript:window.location.href='".$siteDomain."sysadmin/pic_cut.php?photo_url=".$photo_src."&user_id=".$user_id."'";
 	}
 	return $do_url;
 }
-
 ?>

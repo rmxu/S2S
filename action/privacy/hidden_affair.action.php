@@ -24,7 +24,7 @@
 	$user_row = api_proxy("user_self_by_uid",$col,$user_id);
 	
 	if($is_del==0){
-		if(strpos(",,".$user_row[$col].",",",$hidden_value,")){
+		if(preg_match("/,$hidden_value,/",$user_row[$col])){
 			echo $pr_langpackage->pr_rep_screen;
 			exit;
 		}

@@ -9,7 +9,7 @@ $userid=intval(get_argg('userid'));
 $creat_group=get_sess_cgroup();
 
 //权限判断
-if(!strpos(",,$creat_group,",",$group_id,")){
+if(!preg_match("/,$group_id,/",$creat_group)){
 	action_return(0,$g_langpackage->g_no_privilege,"-1");
 }
 

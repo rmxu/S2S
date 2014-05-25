@@ -13,7 +13,6 @@ require_once($webRoot.$langPackageBasePath."recentaffair.php");
 require_once($webRoot.$langPackageBasePath."pubtools.php");
 require_once($webRoot.$langPackageBasePath."mypals.php");
 require_once($webRoot.$langPackageBasePath."group.php");
-require_once($webRoot.$langPackageBasePath."event.php");
 require_once($webRoot.$langPackageBasePath."album.php");
 require_once($webRoot.$langPackageBasePath."msgscrip.php");
 require_once($webRoot.$langPackageBasePath."blog.php");
@@ -63,9 +62,6 @@ require_once($webRoot.$baseLibsPath."integral.php");
 
 //封装session
 require_once($webRoot."foundation/fsession.php");
-
-//封装cookie
-require_once($webRoot."foundation/fcookie.php");
 
 //封装get post
 require_once($webRoot."foundation/fgetandpost.php");

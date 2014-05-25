@@ -18,8 +18,8 @@ if(!get_argp('action')){
   $cho=get_argp('pol_cho');
   $pid=intval(get_argg('pid'));
   $anon=short_check(get_argp('anonymity'));
-  $total_credit=intval(get_argp('credit'));
-  $per_int=intval(get_argp('percredit'));
+  $total_credit=short_check(get_argp('credit'));
+  $per_int=short_check(get_argp('percredit'));
   $p_subject=short_check(get_argp('subject'));
 
   if(empty($anon)){
@@ -88,10 +88,10 @@ if(!get_argp('action')){
 	$content='<a href="home.php?h='.$user_id.'&app=poll&p_id='.$pid.'" target="_blank">'.$p_subject.'</a>';
 	$is_suc=api_proxy("message_set",0,$title,$content,0,4);
 
-  $sql="update $t_poll set voternum=voternum+1,lastvote='".constant('NOWTIME')."' where p_id=$pid";
+  $sql="update $t_poll set voternum=voternum+1,lastvote=NOW() where p_id=$pid";
   $dbo->exeUpdate($sql);
 
-  $sql="insert into $t_polluser (`uid`,`username`,`pid`,`option`,`dateline`,`anony`) values ($user_id,'$user_name',$pid,'$cho_str','".constant('NOWTIME')."',$anon)";
+  $sql="insert into $t_polluser (`uid`,`username`,`pid`,`option`,`dateline`,`anony`) values ($user_id,'$user_name',$pid,'$cho_str',NOW(),$anon)";
 	$dbo->exeUpdate($sql);
 
 	//回应信息

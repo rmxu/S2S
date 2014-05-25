@@ -5,7 +5,7 @@ require("foundation/asmtp_info.php");
 $u_langpackage=new userslp;
 
 $t_users = $tablePreStr."users";
-$email=short_check(get_argp('email'));
+$email=get_argp('email');
 $user_vericode=get_argp("veriCode");
 if(strtolower($_SESSION['verifyCode'])!=strtolower($user_vericode)){
 	action_return(0,$u_langpackage->u_code_error,"-1");

@@ -1,115 +1,85 @@
 <?php
 /*
-modå€¼åˆ†é…:
-0:æ—¥å¿—;
-1:ç›¸å†Œ;
-2:ç¾¤ç»„;
-3:åˆ†äº«;
-4:è¯é¢˜;
-5:æŠ•ç¥¨;
+modÖµ·ÖÅä:
+0:ÈÕÖ¾;
+1:Ïà²á;
+2:Èº×é;
+3:·ÖÏí;
+4:»°Ìâ;
+5:Í¶Æ±;
 */
-//æ ‡ç­¾æ·»åŠ 
-function tag_add($tag_data,$resourse_id,$mod_id){
-	if($tag_data!==''){
-		global $tablePreStr;
-		global $dbo;
-		$t_tag=$tablePreStr."tag";
-		$t_tag_relation=$tablePreStr."tag_relation";
-		$dbo=new dbex;
-		dbplugin('w');
-		if(!is_array($tag_data)){
-			$tag_array=format_tag($tag_data);
-		}else{
-			$tag_array=$tag_data;
-		}
-		foreach($tag_array as $rs){
-			if($rs!==''){
-				$sql="insert into $t_tag (`name`,`count`) values ('$rs',1)";
-				if($dbo->exeUpdate($sql)){
-					$tag_id=mysql_insert_id();
-				}else{
-					$sql="select id from $t_tag where name='$rs'";
-					$tag_info=$dbo->getRow($sql);
-					$tag_id=$tag_info['id'];
-					$sql="update $t_tag set count=count+1 where id=$tag_id";
-					$dbo->exeUpdate($sql);
-				}
-				$sql="insert into $t_tag_relation (`id`,`mod_id`,`content_id`) values ($tag_id,$mod_id,$resourse_id)";
-				$dbo->exeUpdate($sql);
-			}
-		}
-	}
-}
 
-//æ ‡ç­¾åˆ é™¤
-function tag_del($tag_data,$resourse_id,$mod_id){
+//±êÇ©Ìí¼Ó
+function tag_add($tag_data){
 	if($tag_data!==''){
 		global $tablePreStr;
 		global $dbo;
-		$t_tag=$tablePreStr."tag";
-		$t_tag_relation=$tablePreStr."tag_relation";
+		$table=$tablePreStr."tag";
 		$dbo=new dbex;
 		dbplugin('w');
-		if(!is_array($tag_data)){
-			$tag_array=format_tag($tag_data);
-		}else{
-			$tag_array=$tag_data;
-		}
+		$tag_data=preg_replace(array('/\|/','/£¬/','/\s+/'),',',trim($tag_data));
+		$tag_array=explode(',',$tag_data);
+		$tag_id_str='';
 		foreach($tag_array as $rs){
 			if($rs!==''){
-				$sql="select id,count from $t_tag where name='$rs'";
+				$sql="select id from $table where name='$rs'";
 				$tag_info=$dbo->getRow($sql);
-				if($tag_info['count']<=1){
-					$sql="delete from $t_tag where name='$rs'";
+				$tag_id_str.=$tag_id_str ? ',':'';
+				if($tag_info){
+					$tag_id=$tag_info['id'];
+					$sql="update $table set count=count+1 where id='$tag_id'";
 					$dbo->exeUpdate($sql);
+					$tag_id_str.=$tag_id;
 				}else{
-					$sql="update $t_tag set count=count-1 where name='$rs'";
+					$sql="insert into $table (`name`,`count`) values ('$rs',1)";
 					$dbo->exeUpdate($sql);
+					$tag_id=mysql_insert_id();
+					$tag_id_str.=$tag_id;
 				}
-				$tag_id=$tag_info['id'];
-				$sql="delete from $t_tag_relation where content_id='$resourse_id' and id='$tag_id' and mod_id='$mod_id'";
+			}
+		}
+		return $tag_id_str;
+	}
+}
+
+//±êÇ©É¾³ý
+function tag_del($tag_data){
+	if($tag_data){
+		global $tablePreStr;
+		global $dbo;
+		$table=$tablePreStr."tag";
+		$dbo=new dbex;
+		dbplugin('w');
+		foreach($tag_data as $rs){
+			$sql="select count from $table where id=$rs";
+			$tag_info=$dbo->getRow($sql);
+			if($tag_info['count']==1){
+				$sql="delete from $table where id=$rs";
+				$dbo->exeUpdate($sql);
+			}else{
+				$sql="update $table set count=count-1 where id=$rs";
 				$dbo->exeUpdate($sql);
 			}
 		}
 	}
 }
 
-//å–å¾—æ ‡ç­¾
-function get_tag($table,$cols_name,$cols_id){
+//×ÊÔ´Óë±êÇ©µÄ¹ØÏµ±í
+function tag_relation($mod_id,$tag_id,$content_id,$type='add'){
+	global $tablePreStr;
 	global $dbo;
 	$dbo=new dbex;
-	dbplugin('r');
-	$resoure_info=array();
-	$sql="select `tag` from $table where $cols_name=$cols_id";
-	$resoure_info=$dbo->getRow($sql);
-	if(isset($resoure_info['tag'])!=''){
-		return $resoure_info['tag'];
-	}else{
-		return '';
+	dbplugin('w');
+	$table=$tablePreStr."tag_relation";
+	$tag_id=explode(',',$tag_id);
+	foreach($tag_id as $rs){
+		if($rs!=''){
+			if($type=='add') $sql="insert into $table (`id`,`mod_id`,`content_id`) values ($rs,$mod_id,$content_id)";
+			else $sql="delete from $table where content_id=$content_id and id=$tag_id and mod_id=$mod_id";
+			if(!$dbo->exeUpdate($sql)){
+				return 'error';break;
+			}
+		}
 	}
-}
-
-//è‡ªåŠ¨è®¡ç®—æ ‡ç­¾å¢žå‡
-function auto_tag($new_tag,$old_tag,$resourse_id,$mod_id){
-	$new_tag=format_tag($new_tag);
-	$old_tag=format_tag($old_tag);
-	
-	$add_tag=array_diff($new_tag,$old_tag);
-	$del_tag=array_diff($old_tag,$new_tag);
-	
-	if($add_tag){
-		tag_add($add_tag,$resourse_id,$mod_id);
-	}
-	
-	if($del_tag){
-		tag_del($del_tag,$resourse_id,$mod_id);
-	}
-}
-
-//æ ¼å¼åŒ–æ ‡ç­¾
-function format_tag($tag){
-	$tag=preg_replace(array('/\|/','/ï¼Œ/','/\s+/'),',',trim($tag));
-	$tag_array=explode(',',$tag);
-	return $tag_array;
 }
 ?>

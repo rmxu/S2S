@@ -1,5 +1,4 @@
 <?php
-	require("foundation/ftag.php");
 	//引入语言包
 	$b_langpackage=new bloglp;
 
@@ -7,7 +6,6 @@
   $ulog_id=intval(get_argg("id"));
   $privacy=short_check(get_argp("privacy"));
   $ulog_title=short_check(get_argp("blog_title"));
-  $tag=short_check(get_argp("tag"));
   if(get_argp("blog_sort_list")){
   	$ulog_sort=short_check(get_argp("blog_sort_list"));
   }else{
@@ -24,15 +22,12 @@
 	$dbo = new dbex;
 	//读写分离定义函数
 	dbtarget('w',$dbServs);
-	
-	//标签自动化
-	$old_tag=get_tag($t_blog,'log_id',$ulog_id);
-	auto_tag($tag,$old_tag,$ulog_id,0);
-	
-	$sql= "update $t_blog set log_title='$ulog_title',privacy='$privacy',log_sort='$ulog_sort',log_content='$ulog_txt',edit_time='".constant('NOWTIME')."',log_sort_name='$blog_sort_name',tag='$tag' where user_id=$user_id and log_id=$ulog_id";
+
+	$sql= "update $t_blog set log_title='$ulog_title',privacy='$privacy',log_sort='$ulog_sort',log_content='$ulog_txt',edit_time=NOW(),log_sort_name='$blog_sort_name' where user_id=$user_id and log_id=$ulog_id";
  	if($dbo->exeUpdate($sql)){
-		action_return(1,'','modules.php?app=blog&id='.$ulog_id);
+	    action_return(1,'','modules.php?app=blog&id='.$ulog_id);
 	}else{
-		action_return(0,'error','-1');
+		  action_return(0,'error','-1');
 	}
+
 ?>

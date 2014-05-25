@@ -4,6 +4,8 @@
 	$u_man=$user_langpackage->u_man;
 	$u_wen=$user_langpackage->u_wen;
 	$u_sec=$user_langpackage->u_sec;
+	$u_marr_n=$user_langpackage->u_marr_n;
+	$u_marr_y=$user_langpackage->u_marr_y;
 	$lp_u_not=$user_langpackage->u_select;
 	$lp_u_year=$user_langpackage->u_year;
 	$lp_u_month=$user_langpackage->u_month;
@@ -66,6 +68,34 @@ function get_user_sex($sexPara){
    }
 }
 
+function get_user_marry($marryPara){
+	global $u_sec;
+	global $u_marr_n;
+	global $u_marr_y;
+
+	 $tmp='';
+	 if($marryPara=='0'){
+	 	   $tmp=$u_sec;
+	 }
+	 if($marryPara=='1'){
+	 	   $tmp=$u_marr_n;
+   }
+   if($marryPara=='2'){
+   	   $tmp=$u_marr_y;
+   }
+   return $tmp;
+}
+
+function get_user_blood($bloodPara){
+	global $u_sec;
+	 $tmp='';
+	 if($bloodPara=='0'){
+	 	   $tmp=$u_sec;
+	 }else{
+	 	   $tmp=$bloodPara;
+	 }
+   return $tmp;
+}
 
 function get_birth_date($b_year,$b_month,$b_day){
 	global $setMinYear;
@@ -116,6 +146,21 @@ function get_birth_date($b_year,$b_month,$b_day){
 			}
 	echo "</select>";
 	echo $lp_u_day;
+}
+
+function get_blood($u_blood){
+	global $u_sec;
+	echo "
+	<select id='blood' name='blood'>
+		<option value='0'>$u_sec</option>";
+			foreach (array('A','B','O','AB') as $value){
+				echo "<option value=\"$value\"";
+					if($u_blood==$value){
+						echo "selected=selected";
+						}
+				echo ">$value</option>";
+				}
+	echo "</select>";
 }
 
 function pri_ques($acc_ques,$acc_answ,$holder_id){
@@ -236,248 +281,6 @@ function get_dressup($dbo,$table,$holder_id,$dress_type,$dress_name){
 		}
 		echo '<link rel="stylesheet" type="text/css" href="'.$dress_url.$home_dress_url.'">';
 	}
-}
-
-
-
-
-/******************用户资料自定义*******************************/
-
-/**
- * @desc       根据条件取得用户属性列表
- */
-function userInfoGetList($dbo,$cols='*',$condition=false){
-	global $tablePreStr;
-	$t_user_info=$tablePreStr."user_info";
-	$condition=$condition?"where $condition":"";
-	
-	$sql="select $cols from $t_user_info $condition order by id desc ";
-	return $dbo->getAll($sql);
-}
- 
-
-/**
- * @desc       自定义属性列表
- */
-function userInformationGetList(&$dbo,$cols='*',$condition=false){
-	global $tablePreStr;
-	$t_user_information=$tablePreStr."user_information";
-	$condition=$condition?"where $condition":"";
-	
-	$sql="select $cols from $t_user_information $condition order by sort asc ";
-	return $dbo->getAll($sql);
-}
-
-/**
- * @desc       由user_id得到该用户的属性信息
- * @param      int $user_id 用户id
- * @return     array $array;
- */
-function userInformationCombine(&$dbo,$user_id){
-	global $tablePreStr;
-	$t_user_information=$tablePreStr."user_information";
-	$t_user_info=$tablePreStr."user_info";
-
-	$sql="select $t_user_info.user_id,$t_user_info.info_value,$t_user_information.* from  $t_user_information , $t_user_info where $t_user_information.info_id=$t_user_info.info_id and $t_user_info.user_id=$user_id group by $t_user_info.info_id order by  $t_user_information.sort asc";		
-
-	return $dbo->getAll($sql);
-}
-
-/**
- * @desc       根据user_id和info_id得到该用户的某属性
- * @param      int $user_id 用户id
- * @param      int $info_id 属性id
- * @param      int $type	属性类型;
- * @return     array $array;
- */
-function getInfoById($dbo,$user_id,$info_id,$type){
-	global $tablePreStr;
-	$t_user_info=$tablePreStr."user_info";
-
-	$sql="select * from $t_user_info where user_id=$user_id and info_id=$info_id order by id asc ";
-	
-	if($type==3){
-		return $dbo->getAll($sql);
-	}else{
-		return $dbo->getRow($sql);
-	}
-}
-
-/**
- * @desc       根据回车换行把字符串型的属性值转换成数组
- * @param      int $user_id 用户id
- * @param      int $info_id 属性id
- * @param      int $type	属性类型;
- * @return     array $array;
- */
-function changeInformationArray($attr_string){
-	$str_array=array();
-	if($attr_string){
-		$temp=preg_replace("/[\n]+/",'|',$attr_string);
-    	$str_array=explode('|',$temp);
-	}
-	return $str_array;
-}
-
-/**
- * @desc       展示自定义化的属性信息
- * @param      int $type	属性类型;
- * @param      String $values 属性值
- * @param      int $info_id 属性id
- * @param      int $user_id 用户id
- * @return     array $array;
- */
-function getInformationValue(&$dbo,$type,$values,$info_id,$user_id){
-	//获取该用户关于此属性的信息
-	$user_info=getInfoById($dbo,$user_id,$info_id,$type);
-	//把属性值转换成数组
-	$value_array=changeInformationArray($values);
-	
-	//文本类型
-	if($type==0){
-		echo "<input type='text' class='small-text' name='info[".$info_id."]' value='".$user_info['info_value']."' />";
-	}
-	//下拉列表类型
-	else if($type==1){
-		echo "<select name='info[".$info_id."]'>";
-		foreach($value_array as $rs){
-			$rs=trim($rs);
-			$selected = $user_info['info_value']==$rs?"selected":"";
-			echo "<option value='".$rs."' ".$selected.">".$rs."</option>";
-		}			
-	   echo "</select>";
-	}
-	//单选类型
-	else if($type==2){
-		foreach($value_array as $rs){
-			$rs=trim($rs);
-			$selected = $user_info['info_value']==$rs?"checked":"";
-			echo "<input name='info[".$info_id."]' value='".$rs."' type='radio' ".$selected." />".$rs;
-		}
-	}
-	//多选类型
-	else if($type==3){
-		$user_info_array=array();
-		foreach($user_info as $val){
-			$user_info_array[]=$val['info_value'];
-		}
-		foreach($value_array as $key => $rs){
-			$rs=trim($rs);
-			$selected = in_array($rs,$user_info_array)?"checked":"";
-			echo "<input name='info[".$info_id.'|'.$key."]' value='".$rs."' ".$selected." type='checkbox' />".$rs;
-		}
-	}
-}
-
-/**
- * @desc       获取自定义属性 多选的值
- * @param      int $info_id 属性id
- * @param      int $user_id 用户id
- * @return     String $str;
- */
-function getCheckBoxValue(&$dbo,$info_id,$user_id){
-	$info_rs=array();
-	$condition="user_id=$user_id and info_id=$info_id";
-	$info_rs=userInfoGetList($dbo,'info_value',$condition);
-
-	$str="";
-	foreach($info_rs as $val){
-		$str.=$val['info_value']."&nbsp;&nbsp;";
-	}
-	return $str;
-}
-
-function get_infor_type($infro_id,$talbe,&$dbo){
-	$sql="select input_type from $talbe where  infor_id=$infro_id ";
-	$infro_row=$dbo->getRow($sql);
-	return $infro_row['input_type'];
-}
-
-/**
- * @desc       删除用户的自定义属性值
- * @param      int $user_id	用户id;
- */
-function userInforDel(&$dbo,$user_id){
-	global $tablePreStr;
-	$t_user_info=$tablePreStr."user_info";
-	
-	$sql="delete from $t_user_info where user_id='$user_id'";
-	return $dbo->exeUpdate($sql);
-}
-function pals_birth($userId,$num,$cols="*"){
-	global $tablePreStr;
-	$t_users=$tablePreStr."users";
-	$dbo=new dbex;
-  	dbplugin('r');	
-	if (empty($userId)){
-		$userId = get_sess_userid();
-	}
-	
-	
-	//未来三个月月份
-	$this_month = date("n");	
-	$month[0] = $this_month+1>12? 1:$this_month+1;
-	$month[1] = $month[0]+1>12? 1:$month[0]+1;
-	$day = date("j");
-	$pals = get_sess_mypals();	
-	if (empty($pals)){
-		return false;
-	}	
-	$condition = " user_id in (".$pals.") and (birth_month in ($month[0],$month[1]) or (birth_month=$this_month and birth_day>=$day))";
-	$orderCol = "ABS(birth_day)"; 	
-	$sql = "SELECT * FROM $t_users WHERE ".$condition." order by $orderCol ASC limit $num";
-	$fir =  $dbo->getALL($sql);
-	if (!empty($fir)){	
-		$fir_1 = array();
-		$fir_2 = array();
-		$fir_3 = array();		
-		foreach ($fir as $val){					
-			if ($val['birth_month']==$this_month){
-				$fir_1[] = $val;
-			}
-			if ($val['birth_month']==$month[0]){
-				$fir_2[] = $val;
-			}
-			if ($val['birth_month']==$month[1]){
-				$fir_3[] = $val;
-			}
-		}		
-	
-		$firList = array_merge($fir_1,$fir_2,$fir_3);			
-		return $firList;	
-	} else {
-		return false;
-	}	
-}
-
-
-function getMatchActivation(&$dbo,$user_email){
-		global $tablePreStr;
-		$t_user_activation=$tablePreStr."user_activation";
-		$t_user=$tablePreStr."users";
-
-		$sql = "select $t_user_activation.*,$t_user.user_id,$t_user.user_name,$t_user.activation_id from $t_user,$t_user_activation where $t_user.user_email='$user_email' and $t_user.activation_id=$t_user_activation.id";
-		return $dbo->getRow($sql);
-	}
-
-
-function pals_friBirthMon($m,$userId,$page_num,$num=20,$cols="*"){
-	global $tablePreStr;
-	$t_users=$tablePreStr."users";
-	$dbo=new dbex;
-  	dbplugin('r');	
-	$pals = get_sess_mypals();
-	
-	if (empty($pals)){
-		return false;
-	}	
-	$condition = "user_id in(".$pals.") and birth_month=$m";
-	$orderCol = "ABS(birth_day)"; 
-	$sql = "SELECT * FROM $t_users WHERE ".$condition." order by $orderCol ASC";
-	$dbo->setPages($num,$page_num);	
-	$fir[0] =  $dbo->getRs($sql);	
-	$fir[1]=$dbo->totalPage;//分页总数
-	return $fir;
 }
 
 ?>

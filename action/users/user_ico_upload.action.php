@@ -53,7 +53,7 @@
           $fileSrcStr=str_replace($webRoot,"",$realtxt['dir']).$realtxt['name'];
           $fileName=$realtxt['initname'];
 
-          $sql="insert into $t_uploadfile (file_name,file_src,user_id,add_time) values ('$fileName','$fileSrcStr','$user_id','".constant('NOWTIME')."')";
+          $sql="insert into $t_uploadfile (file_name,file_src,user_id,add_time) values ('$fileName','$fileSrcStr','$user_id',NOW())";
           $dbo->exeUpdate($sql);
 
 				if($file_is_ico==1){

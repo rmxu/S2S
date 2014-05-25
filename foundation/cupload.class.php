@@ -19,7 +19,7 @@ class upload {
 	      $this->field = $field;
 	      $this->time = $time ? $time : time();
     }
-
+    
     //设置$field名字
     function set_field($str){
     		$this->field = $str;
@@ -30,16 +30,13 @@ class upload {
     //$filedir  : 自定义子目录，可用参数{y}、{m}、{d}
     function set_dir($basedir,$filedir = '') {
         $dir = $basedir;
-        if(!file_exists($dir)){
-        	mkdir($dir,0777);
-        }
-
-        if(!empty($filedir)){
+        !is_dir($dir) && @mkdir($dir,0777);
+        if (!empty($filedir)) {
             $filedir = str_replace(array('{y}','{m}','{d}'),array(date('Y',$this->time),date('m',$this->time),date('d',$this->time)),strtolower($filedir));
             $dirs = explode('/',$filedir);
-            foreach ($dirs as $d){
-              !empty($d) && $dir .= $d.'/';
-              !is_dir($dir) && @mkdir($dir,0777);
+            foreach ($dirs as $d) {
+                !empty($d) && $dir .= $d.'/';
+                !is_dir($dir) && @mkdir($dir,0777);
             }
         }
         $this->dir = $dir;
@@ -76,24 +73,20 @@ class upload {
       $filedir = $this->dir;  //附件实际存放目录
       $filesize = $_FILES[$field]['size']; //文件大小
       $fileinitname = $_FILES[$field]['name'];
-
-      if(in_array($fileext,array('jpg','png','gif','jpeg'))){
-	      //文件大小不匹配
-	      $image_info=getImageSize($_FILES[$field]['tmp_name']);
-	      if($image_info[1] > $image_info[0]*3){
-	      	$files[$key]['name'] = $_FILES[$field]['name'];
-	      	$files[$key]['flag'] = -3;
-	      	$files[$key]['initname'] = "";
-	      	continue;
-	      }
-	    }
-
+      $image_info=getImageSize($_FILES[$field]['tmp_name']);
+      //文件大小不匹配
+      if($image_info[1] > $image_info[0]*3){
+      	$files[$key]['name'] = $_FILES[$field]['name'];
+      	$files[$key]['flag'] = -3;
+      	$files[$key]['initname'] = "";
+      	continue;
+      }      
       if(is_uploaded_file($_FILES[$field]['tmp_name'])){
         move_uploaded_file($_FILES[$field]['tmp_name'],$filedir.$filename);
         @unlink($_FILES[$field]['tmp_name']);
         $files['flag'] = 1;
         //对图片进行加水印和生成缩略图
-        if(in_array($fileext,array('jpg','png','gif','jpeg'))){
+        if(in_array($fileext,array('jpg','png','gif'))){
 	        if($this->thumb_width){
 	        	if($this->create_thumb($filedir.$filename,$filedir.'thumb_'.$filename)){
 	          	$files['thumb'] = 'thumb_'.$filename;  //缩略图文件名
@@ -107,7 +100,7 @@ class upload {
       $files['initname']=$fileinitname;
       return $files;
     }
-
+    
     function execute() {
         $files = array(); //成功上传的文件信息
         $field = $this->field;
@@ -118,7 +111,7 @@ class upload {
 	        $filename = date('Ymdhis',$this->time).mt_rand(10,99).'.'.$fileext; //生成文件名
 	        $filedir = $this->dir;  //附件实际存放目录
 	        $filesize = $_FILES[$field]['size'][$key]; //文件大小
-
+	
 	        //文件类型不允许
 	        if (!in_array($fileext,$this->allow_types)) {
 	            $files[$key]['name'] = $_FILES[$field]['name'][$key];
@@ -126,7 +119,7 @@ class upload {
 	            $files[$key]['initname'] = "";
 	            continue;
 	        }
-
+	
 	        //文件大小超出
 	        if ($filesize > $this->maxsize) {
 	            $files[$key]['name'] = $_FILES[$field]['name'][$key];
@@ -134,31 +127,28 @@ class upload {
 	            $files[$key]['initname'] = "";
 	            continue;
 	        }
-
-	        if(in_array($fileext,array('jpg','png','gif','jpeg'))){
-		        //文件大小不匹配
-		        $image_info=getImageSize($_FILES[$field]['tmp_name'][$key]);
-		        if($image_info[1] > $image_info[0]*3){
-		        	$files[$key]['name'] = $_FILES[$field]['name'][$key];
-		        	$files[$key]['flag'] = -3;
-		        	$files[$key]['initname'] = "";
-		        	continue;
-		        }
+	        $image_info=getImageSize($_FILES[$field]['tmp_name'][$key]);
+	        
+	        //文件大小不匹配
+	        if($image_info[1] > $image_info[0]*3){
+	        	$files[$key]['name'] = $_FILES[$field]['name'][$key];
+	        	$files[$key]['flag'] = -3;
+	        	$files[$key]['initname'] = "";
+	        	continue;
 	        }
-
 	        $files[$key]['name'] = $filename;
 	        $files[$key]['dir'] = $filedir;
 	        $files[$key]['size'] = $filesize;
 	        $files[$key]['initname'] = $_FILES[$field]['name'][$key];
-
+	
 	        //保存上传文件并删除临时文件
 	        if (is_uploaded_file($_FILES[$field]['tmp_name'][$key])){
 	            move_uploaded_file($_FILES[$field]['tmp_name'][$key],$filedir.$filename);
 	            @unlink($_FILES[$field]['tmp_name'][$key]);
 	            $files[$key]['flag'] = 1;
-
+	
 	            //对图片进行加水印和生成缩略图
-	            if (in_array($fileext,array('jpg','png','gif','jpeg'))) {
+	            if (in_array($fileext,array('jpg','png','gif'))) {
 	                if ($this->thumb_width) {
 	                    if ($this->create_thumb($filedir.$filename,$filedir.'thumb_'.$filename)) {
 	                        $files[$key]['thumb'] = 'thumb_'.$filename;  //缩略图文件名
@@ -200,7 +190,7 @@ class upload {
             case 'gif' :
                 $src_img = imagecreatefromgif($src_file); break;
         }
-
+        
         //创建一个真彩色的缩略图像
         $thumb_img=ImageCreatetruecolor($this->thumb_width,$this->thumb_height);
 				$clr = imagecolorallocate($thumb_img,255,255,255);

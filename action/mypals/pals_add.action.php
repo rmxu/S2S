@@ -76,7 +76,7 @@ if($touser_pals_limit==0){
 		$dbo->exeUpdate($sql);
 	}
 	
-	$sql="insert into $t_mypals (user_id,pals_id,pals_name,pals_sex,add_time,pals_ico,accepted) value($user_id,$mreq_touser,'$touser_name','$touser_sex','".constant('NOWTIME')."','$touser_ico',$accepted)";
+	$sql="insert into $t_mypals (user_id,pals_id,pals_name,pals_sex,add_time,pals_ico,accepted) value($user_id,$mreq_touser,'$touser_name','$touser_sex',NOW(),'$touser_ico',$accepted)";
 	$dbo->exeUpdate($sql);
 
 	if(empty($user_mypals)){
@@ -98,11 +98,11 @@ if($touser_pals_limit==0){
 //验证加入
 if($touser_pals_limit==1){
  $sql="insert into $t_mypals (user_id,pals_id,pals_name,pals_sex,add_time,pals_ico)"
-                         ."value($user_id,$touser_id,'$touser_name','$touser_sex','".constant('NOWTIME')."','$touser_ico')";
+                         ."value($user_id,$touser_id,'$touser_name','$touser_sex',NOW(),'$touser_ico')";
  $dbo->exeUpdate($sql);
  $from_pals_id=MYSQL_INSERT_ID();
  $sql="insert into $t_pals_request (user_id,req_id,req_name,req_sex,add_time,from_id,req_ico)"
-                        ."value($touser_id,$user_id,'$user_name','$user_sex','".constant('NOWTIME')."',$from_pals_id,'$userico')";
+                        ."value($touser_id,$user_id,'$user_name','$user_sex',NOW(),$from_pals_id,'$userico')";
  if($dbo->exeUpdate($sql)){
  	api_proxy("message_set",$mreq_touser,$mp_langpackage->mp_remind,"modules.php?app=mypals_request",0,3,"remind");//提醒机制
   echo $mp_langpackage->mp_suc_reg;

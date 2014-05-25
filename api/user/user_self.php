@@ -11,7 +11,7 @@ function user_read_base($fields="*",$condition="",$get_type="",$num="",$by_col="
 	$dbo=new dbex;
   dbplugin('r');
 	$allow_cols=array(
-		"user_id","user_email","user_name","user_sex","birth_province","birth_city","reside_province","reside_city","user_ico","user_add_time","birth_year","birth_month","birth_day","creat_group","join_group","guest_num","integral","lastlogin_datetime","hidden_pals_id","hidden_type_id","inputmess_limit","palsreq_limit","is_pass","access_limit","access_questions","access_answers","forget_pass"
+		"user_id","user_marry","user_email","user_name","user_sex","user_call","birth_province","birth_city","reside_province","reside_city","user_ico","user_add_time","birth_year","birth_month","birth_day","user_blood","user_qq","creat_group","join_group","guest_num","integral","lastlogin_datetime","hidden_pals_id","hidden_type_id","inputmess_limit","palsreq_limit","is_pass","access_limit","access_questions","access_answers","forget_pass"
 	);
   $limit=$num ? " limit $num ":"";
 	$by_col = $by_col ? " $by_col " : " user_id ";

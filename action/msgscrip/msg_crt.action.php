@@ -49,12 +49,12 @@
 	//读写分离定义函数
 	dbtarget('w',$dbServs);
   $sql="insert into $t_msg_outbox (mess_title,mess_content,to_user_id,to_user,to_user_ico,user_id,add_time,state)"
-                        ."value('$msg_title','$msg_txt',$touser_id,'$touser','$touser_ico',$user_id,'".constant('NOWTIME')."','1')";
+                        ."value('$msg_title','$msg_txt',$touser_id,'$touser','$touser_ico',$user_id,NOW(),'1')";
 	if(!$dbo ->exeUpdate($sql)){
 		action_return(0,$m_langpackage->m_data_err,"-1");exit;
 	}
 	$sql="insert into $t_msg_inbox (mess_title,mess_content,from_user_id,from_user,from_user_ico,user_id,add_time,mesinit_id)"
-                   ."value('$msg_title','$msg_txt',$user_id,'$user_name','$user_ico',$touser_id,'".constant('NOWTIME')."',LAST_INSERT_ID())";
+                   ."value('$msg_title','$msg_txt',$user_id,'$user_name','$user_ico',$touser_id,NOW(),LAST_INSERT_ID())";
 
 	if($dbo ->exeUpdate($sql)){
 			api_proxy("message_set",$touser_id,$m_langpackage->m_remind,"modules.php?app=msg_minbox",0,5,"remind");

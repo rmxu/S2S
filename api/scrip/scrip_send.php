@@ -8,7 +8,7 @@ function scrip_send($sender,$title,$content,$to_id,$scrip_id=''){
 	$dbo=new dbex;
   dbplugin('w');
 	$sql="insert into $t_scrip (mess_title,mess_content,from_user,from_user_ico,user_id,add_time,from_user_id,mesinit_id)"
-	                    ."value('$title','$content','$sender','$uico',$to_id,'".constant('NOWTIME')."',$uid,'$scrip_id')";
+	                    ."value('$title','$content','$sender','$uico',$to_id,NOW(),$uid,'$scrip_id')";
   return $dbo->exeUpdate($sql);
 }
 ?>

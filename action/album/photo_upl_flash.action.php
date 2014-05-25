@@ -80,11 +80,11 @@ if($_REQUEST['action']=="upload"){
 		$fileSrcStr=str_replace(dirname(__FILE__),"",$realtxt['dir']).$realtxt['name'];
 		$thumb_src=str_replace(dirname(__FILE__),"",$realtxt['dir']).$realtxt['thumb'];
 		$sql = "insert into $t_photo(`user_id`,`add_time`,`photo_src`,`photo_thumb_src`,`album_id`,`user_name`,`privacy`)
-			                     values($user_id,'".constant('NOWTIME')."','$fileSrcStr','$thumb_src',$album_id,'$user_name','');";
+			                     values($user_id,now(),'$fileSrcStr','$thumb_src',$album_id,'$user_name','');";
 
 		if($dbo -> exeUpdate($sql)){
 		  $photo_id=mysql_insert_id();
-		  $sql = "update $t_album set photo_num=photo_num+1,update_time='".constant('NOWTIME')."' where album_id=$album_id";
+		  $sql = "update $t_album set photo_num=photo_num+1,update_time=NOW() where album_id=$album_id";
 		  $dbo -> exeUpdate($sql);
 
 		//数据清理

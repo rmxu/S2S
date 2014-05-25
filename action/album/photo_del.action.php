@@ -35,7 +35,7 @@
 		increase_integral($dbo,$int_del_photo,$user_id);
 	}
 
-	$sql = "update $t_album set photo_num=photo_num-1,update_time='".constant('NOWTIME')."' where album_id=$album_id";
+	$sql = "update $t_album set photo_num=photo_num-1,update_time=NOW() where album_id=$album_id";
 	$dbo -> exeUpdate($sql);
 
 	//回应信息

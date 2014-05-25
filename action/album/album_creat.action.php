@@ -30,12 +30,13 @@
 
 	$album_skin = "uploadfiles/album/logo.jpg";
 	$sql = "insert into $t_album (`album_name`,`user_id`,`user_name`,`album_info`,`add_time`,`privacy`,`album_skin`,`tag`,`update_time`) " .
-			"values('$album_name',$user_id,'$user_name','$album_information','".constant('NOWTIME')."','$privacy','$album_skin','$tag','".constant('NOWTIME')."'); ";
+			"values('$album_name',$user_id,'$user_name','$album_information',NOW(),'$privacy','$album_skin','$tag',NOW()); ";
 	$dbo -> exeUpdate($sql);
 	$album_id = mysql_insert_id();
 
 	//标签功能
-	tag_add($tag,$album_id,1);
+	$tag_id=tag_add($tag);
+	$tag_state=tag_relation(0,$tag_id,$album_id);
 
 	//回应信息
 	action_return(1,"","modules.php?app=photo_upload&album_id=$album_id");

@@ -15,7 +15,7 @@ function share_act($dbo,$type_id,$for_content_id,$s_title='',$tag='',$link_href=
 		}
 	}
 	$sql="insert into $t_share ( type_id,user_id,user_name,user_ico,add_time,for_content_id,s_title,out_link,movie_thumb,movie_link,`tag`) values "
-			."($type_id,$user_id,'$user_name','$userico','".constant('NOWTIME')."',$for_content_id,'$s_title','$link_href','$link_thumb','$re_m_link','$tag')";
+			."($type_id,$user_id,'$user_name','$userico',NOW(),$for_content_id,'$s_title','$link_href','$link_thumb','$re_m_link','$tag')";
 	$dbo->exeUpdate($sql);
 	return mysql_insert_id();
 }

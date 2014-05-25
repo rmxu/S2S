@@ -3,6 +3,7 @@
 require("foundation/aanti_refresh.php");
 require("foundation/aintegral.php"); 
 require("foundation/module_affair.php");
+
 require("api/base_support.php");
 
 //引入语言包
@@ -14,7 +15,7 @@ $pol_langpackage=new polllp;
   $pid=intval(get_argg('pid'));
   $new_option=short_check(get_argp('add_new_option'));
   $add_award_sum=intval(get_argp('add_award_sum'));
-  $add_award_sing=intval(get_argp('add_award_sing'));
+  $add_award_sing=intval(get_argp('add_award_sing')));
   $add_new_option=short_check(get_argp('add_new_optin'));
   $expiration=short_check(get_argp('expiration'));
   $add_summary=short_check(get_argp('add_summary'));
@@ -26,6 +27,7 @@ $pol_langpackage=new polllp;
 	$t_polluser=$tablePreStr."polluser";
 	$t_poll_com=$tablePreStr."poll_comment";
 	
+  dbtarget('r',$dbServs);	
   $dbo=new dbex();
   
   $poll_info=api_proxy("poll_self_by_pollid","*",$pid);

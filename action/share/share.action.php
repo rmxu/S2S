@@ -47,7 +47,7 @@ $s_langpackage=new sharelp;
 			$title_data=$title_data ? $title_data:$rs['log_title'];
 			$title=$s_langpackage->s_shared.$user_name.$s_langpackage->s_s_log.'<a href="home.php?h='.$rs['user_id'].'&app=blog&id='.$s_content_id.'" target="_blank">'.$title_data.'</a>';
 			$share_id=share_act($dbo,$s_type,$s_content_id,$title,$tag);
-			$content=get_lentxt($rs['log_content']);
+			$content=get_blog_lentxt($rs['log_content']);
 		}
 		break;
 
@@ -60,7 +60,7 @@ $s_langpackage=new sharelp;
 			$title_data=$title_data ? $title_data:$rs['group_name'];
 			$title=$s_langpackage->s_shared.$user_name.$s_langpackage->s_s_group.'<a href="home.php?h='.$rs['add_userid'].'&app=group_space&group_id='.$s_content_id.'" target="_blank">'.$title_data.'</a>';
 			$share_id=share_act($dbo,$s_type,$s_content_id,$title,$tag);
-			$content=get_lentxt($rs['group_resume']);
+			$content=get_blog_lentxt($rs['group_resume']);
 		}
 		break;
 
@@ -167,13 +167,14 @@ $s_langpackage=new sharelp;
 				$title_data=$title_data ? $title_data:$rs['title'];
 				$title=$s_langpackage->s_shared.$user_name.$s_langpackage->s_s_topic.'<a href="home.php?h='.$rs['user_id'].'&app=group_sub_show&group_id='.$rs['group_id'].'&subject_id='.$s_content_id.'" target="_blank">'.$title_data.'</a>';
 				$share_id=share_act($dbo,$s_type,$s_content_id,$title,$tag);
-				$content=get_lentxt($rs['content']);
+				$content=get_blog_lentxt($rs['content']);
 				break;
 			}
 		}
 
 	//标签功能
-	tag_add($tag,$share_id,3);
+	$tag_id=tag_add($tag);
+	$tag_state=tag_relation(3,$tag_id,$share_id);
 	$content.=$s_comment ? '<div class="clear"></div><div class="left_g left"></div><div class="center_g left">'.$s_comment.'</div><div class="right_g left"></div><div class="clear"></div>':'';
 
 	//插入动态表

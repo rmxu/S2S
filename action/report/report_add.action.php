@@ -92,7 +92,7 @@
 		}
 		dbtarget('w',$dbServs);
 		$sql="insert into $t_report (user_id,reason,user_name,type,content,add_time,reported_id,userd_id) "
-			."values ('$user_id','$reason','$user_name','$type','$content','".constant('NOWTIME')."','$mod_id','$userd_id')";
+			."values ('$user_id','$reason','$user_name','$type','$content',now(),'$mod_id','$userd_id')";
 		if($dbo->exeUpdate($sql)){
 			echo 'true';
 		}else{

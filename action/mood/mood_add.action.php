@@ -24,7 +24,7 @@
 		//读写分离定义函数
 		dbtarget('w',$dbServs);
 		//留言
-		$sql = "insert into $t_mood(`user_id`,`mood`,`add_time`,`user_ico`,`user_name`) values($user_id,'$mood','".constant('NOWTIME')."','$uico_url','$user_name')";
+		$sql = "insert into $t_mood(`user_id`,`mood`,`add_time`,`user_ico`,`user_name`) values($user_id,'$mood',now(),'$uico_url','$user_name')";
 		if($dbo->exeUpdate($sql)){
 			$last_id=mysql_insert_id();
 			$title=$mo_langpackage->mo_mood_update;

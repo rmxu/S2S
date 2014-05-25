@@ -42,9 +42,6 @@
   $t_mood=$tablePreStr."mood";
   $t_mood_comment=$tablePreStr."mood_comment";
   
-  $t_event=$tablePreStr."event";
-  $t_event_comment=$tablePreStr."event_comment";
-  
   $dbo=new dbex();
   
 	switch($type_id){
@@ -88,12 +85,6 @@
 		$t_table_com=$t_mood_comment;
 		$mod_col="mood_id";
 		break;
-		case "7":
-		$t_table=$t_event;
-		$t_table_com=$t_event_comment;
-		$mod_col="event_id";
-		break;
-		
 		default:
 		echo 'error';
 		break;
@@ -116,3 +107,4 @@
 	  }
 
 ?>
+

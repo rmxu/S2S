@@ -3,6 +3,7 @@
   require("foundation/aanti_refresh.php");
 	require("foundation/aintegral.php");
 	require("foundation/module_group.php");
+	require("foundation/ftag.php");
 
 //引入语言包
 	$g_langpackage=new grouplp;
@@ -32,12 +33,16 @@
 
 //写入方式
 	dbtarget('w',$dbServs);
-  $sql="insert into $t_group_subject (user_id,title,content,add_time,group_id,user_name,hits,user_ico,`tag`) values($user_id,'$ulog_title','$ulog_txt','".constant('NOWTIME')."',$group_id,'$user_name',0,'$user_ico','$tag')";
+  $sql="insert into $t_group_subject (user_id,title,content,add_time,group_id,user_name,hits,user_ico,`tag`) values($user_id,'$ulog_title','$ulog_txt',NOW(),$group_id,'$user_name',0,'$user_ico','$tag')";
   $dbo->exeUpdate($sql);
   $last_id=mysql_insert_id();
 
 	$sql="update $t_group set subjects_num=subjects_num+1 where group_id=$group_id";
 	$dbo->exeUpdate($sql);
+
+//标签功能
+	$tag_id=tag_add($tag);
+	$tag_state=tag_relation(4,$tag_id,$last_id);
 
 	increase_integral($dbo,$int_subject,$user_id);
 

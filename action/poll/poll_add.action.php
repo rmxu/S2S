@@ -2,13 +2,14 @@
 //引入模块公共方法文件
 require("api/base_support.php");
 require("foundation/aintegral.php");
+require("foundation/ftag.php");
 
 //引入语言包
 $pol_langpackage=new polllp;
 
 //权限验证
 if(!get_argp('action')){
-	action_return(0,"$pol_langpackage->pol_error",-1);exit;
+	action_return(0,"$pol_langpackage->pol_error",-1);
 }
 
 //变量声明区
@@ -58,7 +59,7 @@ if(!get_argp('action')){
   $cre_value=empty($credit) ? 0 : intval($credit);
   $per_value=empty($percredit) ? 0 : intval($percredit);
 
-  $sql="insert into $t_poll (`user_id`,`username`,`user_ico`,`subject`,`multiple`,`maxchoice`,`sex`,`noreply`,`dateline`,`credit`,`percredit`,`expiration`,`message`,`option`) values ($user_id,'$user_name','$userico','$subject',$multiple,$maxchoice,$sex,$noreply,'".constant('NOWTIME')."',$cre_value,$per_value,'$expiration','$message','$cho_ser')";
+  $sql="insert into $t_poll (`user_id`,`username`,`user_ico`,`subject`,`multiple`,`maxchoice`,`sex`,`noreply`,`dateline`,`credit`,`percredit`,`expiration`,`message`,`option`) values ($user_id,'$user_name','$userico','$subject',$multiple,$maxchoice,$sex,$noreply,NOW(),$cre_value,$per_value,'$expiration','$message','$cho_ser')";
   $dbo->exeUpdate($sql);
 
   $last_pid=mysql_insert_id();
@@ -74,6 +75,10 @@ if(!get_argp('action')){
 		$content='<a href="home.php?h='.$user_id.'&app=poll&p_id='.$last_pid.'" target="_blank">'.$subject.'</a>';
 		$is_suc=api_proxy("message_set",$last_pid,$title,$content,0,4);
 	}
+
+	//标签功能
+	$tag_id=tag_add($tag);
+	$tag_state=tag_relation(5,$tag_id,$last_pid);
 
 	increase_integral($dbo,$int_poll,$user_id);
 	//回应信息

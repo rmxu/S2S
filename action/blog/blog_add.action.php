@@ -36,17 +36,20 @@
 	dbtarget('w',$dbServs);
 	increase_integral($dbo,$int_blog,$user_id);
   plugin_submit_form();//plugins表单分发
-	$sql="insert into $t_blog (user_id,log_title,log_sort,log_content,add_time,log_sort_name,user_name,user_ico,privacy,`tag`) values ($user_id,'$ulog_title',$ulog_sort,'$ulog_txt','".constant('NOWTIME')."','$blog_sort_name','$user_name','$uico_url','$privacy','$tag')";
+	$sql="insert into $t_blog (user_id,log_title,log_sort,log_content,add_time,log_sort_name,user_name,user_ico,privacy,`tag`) values ($user_id,'$ulog_title',$ulog_sort,'$ulog_txt',NOW(),'$blog_sort_name','$user_name','$uico_url','$privacy','$tag')";
 	if(!$dbo->exeUpdate($sql)){
 		action_return(0,$b_langpackage->b_add_fal,'-1');exit;
 	}
-	$ublog_id=mysql_insert_id();
+
 	if($privacy==''){
+		$ublog_id=mysql_insert_id();
 		$title=$b_langpackage->b_write_new_log."<a href=\"home.php?h=".$user_id."&app=blog&id=".$ublog_id."\" target='_blank'>".$ulog_title."</a>";
-		$content=get_lentxt($ulog_txt);
+		$content=get_blog_lentxt($ulog_txt);
 		$is_suc=api_proxy("message_set",$ublog_id,$title,$content,3,0);
 	}
 	//标签功能
-	tag_add($tag,$ublog_id,0);
+	$tag_id=tag_add($tag);
+	$tag_state=tag_relation(1,$tag_id,$ublog_id);
+
 	action_return(1,'','');
 ?>

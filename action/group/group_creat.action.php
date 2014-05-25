@@ -44,13 +44,12 @@ if($_FILES['attach']['name'][0]!=''){
   $up->set_dir($base_dir,'{y}/{m}/{d}');//目录设置
   $up->set_thumb(150,150); //缩略图设置
   $fs = $up->execute();
-  if($fs[0]['flag']==1){
-  	$fileSrcStr=str_replace(dirname(__FILE__),"",$fs[0]['dir']).$fs[0]['name'];
-  	$thumb_src=str_replace(dirname(__FILE__),"",$fs[0]['dir']).$fs[0]['thumb'];
-  	if($fileSrcStr!=$thumb_src) unlink($fileSrcStr);
-  }else{
-  	action_return(0,$g_langpackage->g_logo_limit,"-1");exit;
+  if($fs[0]['flag']==-1){
+  	action_return(0,$g_langpackage->g_logo_limit,"-1");
   }
+	$fileSrcStr=str_replace(dirname(__FILE__),"",$fs[0]['dir']).$fs[0]['name'];
+	unlink($fileSrcStr);
+	$thumb_src=str_replace(dirname(__FILE__),"",$fs[0]['dir']).$fs[0]['thumb'];
 }
 
 //定义写操作
@@ -58,31 +57,33 @@ dbtarget('w',$dbServs);
 $dbo=new dbex();
 
 //插入group数据表
-$sql="insert into $t_groups (add_userid,member_count,group_name,group_resume,group_creat_name,group_logo,group_join_type,group_time,tag,group_type,group_type_id) values($user_id,1,'$group_name','$group_resume','$user_name','$thumb_src',$group_join_type,'".constant('NOWTIME')."','$tag','$group_type_name',$group_type_id)";
+$sql="insert into $t_groups (add_userid,member_count,group_name,group_resume,group_creat_name,group_logo,group_join_type,group_time,tag,group_type,group_type_id) values($user_id,1,'$group_name','$group_resume','$user_name','$thumb_src',$group_join_type,NOW(),'$tag','$group_type_name',$group_type_id)";
 if($dbo->exeUpdate($sql)){
 	$last_id=mysql_insert_id();
-	
-	//标签功能
-	tag_add($tag,$last_id,2);
-	
-	//新鲜事
-	$title=$g_langpackage->g_create_group.'<a href="home.php?h='.$user_id.'&app=group_space&group_id='.$last_id.'" target="_blank">'.$group_name.'</a>';
-	$content='<a href="home.php?h='.$user_id.'&app=group_space&group_id='.$last_id.'" target="_blank">'.$group_name.'</a>';
-	$is_suc=api_proxy("message_set",0,$title,$content,0,1);
-	
-	//更新users表
-	$sess_creat_group=empty($sess_creat_group)? ",".$last_id.",":$sess_creat_group.$last_id.",";
-	$sql="update $t_users set creat_group='$sess_creat_group' where user_id=$user_id";
-	$dbo->exeUpdate($sql);
-	
-	//插入group_members数据表
-	$sql="insert into $t_group_members (group_id,user_id,user_name,user_sex,state,role,add_time,user_ico) values($last_id,$user_id,'$user_name','$sess_user_sex',1,0,'".constant('NOWTIME')."','$userico')";
-	$dbo->exeUpdate($sql);
-	
-	//更新session
-	set_sess_cgroup($sess_creat_group);
 }
-	//回应信息
-	action_return(1,'',"");
+
+//标签功能
+$tag_id=tag_add($tag);
+$tag_state=tag_relation(2,$tag_id,$last_id);
+
+//新鲜事
+$title=$g_langpackage->g_create_group.'<a href="home.php?h='.$user_id.'&app=group_space&group_id='.$last_id.'" target="_blank">'.$group_name.'</a>';
+$content='<a href="home.php?h='.$user_id.'&app=group_space&group_id='.$last_id.'" target="_blank">'.$group_name.'</a>';
+$is_suc=api_proxy("message_set",0,$title,$content,0,1);
+
+//更新users表
+$sess_creat_group=empty($sess_creat_group)? ",".$last_id.",":$sess_creat_group.$last_id.",";
+$sql="update $t_users set creat_group='$sess_creat_group' where user_id=$user_id";
+$dbo->exeUpdate($sql);
+
+//插入group_members数据表
+$sql="insert into $t_group_members (group_id,user_id,user_name,user_sex,state,role,add_time,user_ico) values($last_id,$user_id,'$user_name','$sess_user_sex',1,0,NOW(),'$userico')";
+$dbo->exeUpdate($sql);
+
+//更新session
+set_sess_cgroup($sess_creat_group);
+
+//回应信息
+action_return(1,'',"");
 
 ?>

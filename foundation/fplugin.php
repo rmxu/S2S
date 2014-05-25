@@ -1,10 +1,8 @@
 <?php
-function create_plugin($plugin_id,$url="",$name="",$plugin_layout)
+function create_plugin($plugin_id,$url="",$name="")
 {
 	$perfix_path="plugins/$name/";
-	if(!strpos($plugin_layout,'MENU')){
-		echo "<div id='plugin_$plugin_id'>";
-	}
+	echo "<div id='plugin_$plugin_id'>";
 	/*,$css="",$js="",$call=""
 	if(!is_null($css) && ''!=$css)echo "<link href='$perfix_path$css' rel='stylesheet' type='text/css'>";
 	if(!is_null($js)&& ''!=$js) echo "<script type='text/javascript' src='$perfix_path$js'></script>";
@@ -14,6 +12,7 @@ function create_plugin($plugin_id,$url="",$name="",$plugin_layout)
 	{
 		if("php"==substr(file_ext($url),0,3))
 		{
+			//echo ("http://".$_SERVER["HTTP_HOST"]getRootUrl().$url);
 			include_safe("$perfix_path".$url);
 		}
 		else
@@ -21,9 +20,7 @@ function create_plugin($plugin_id,$url="",$name="",$plugin_layout)
 			include_once("$perfix_path".$url);
 		}
 	}
-	if(!strpos($plugin_layout,'MENU')){
-		echo "</div>";
-	}
+	echo "</div>";
 }
 function show_plugins($plugins)
 {
@@ -31,7 +28,8 @@ function show_plugins($plugins)
 	{
 		foreach($plugins as $rs)
 		{
-			create_plugin($rs['id'],$rs['url'],$rs['name'],$rs['layout_id']);
+			//,$rs['csspath'],$rs['jspath'],$rs['callfunction']
+			create_plugin($rs['id'],$rs['url'],$rs['name']);
 		}
 	}
 }
@@ -45,11 +43,5 @@ function getRootUrl()
 }function include_safe($name)
 {
 	include "$name";
-}
-function get_user_apps()
-{
-    global $webRoot;
-    require_once($webRoot.'api/plugins/plugins_get.php');
-    return plugins_get_mine();
 }
 ?>

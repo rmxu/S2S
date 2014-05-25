@@ -8,7 +8,6 @@ $sql="delete from $t_online where user_id=$user_id";
 $dbo->exeUpdate($sql);
 
 setcookie("IsReged",'');
-session_regenerate_id();
 session_destroy();
 action_return(1,'','');
 ?>

@@ -41,7 +41,6 @@ function message_set_affair($id,$title,$content,$show_type_id,$mod_type,$to_user
 	global $tablePreStr;
 	$t_recent_affair=$tablePreStr."recent_affair";
 	$t_users=$tablePreStr."users";
-	$t_mypals=$tablePreStr."pals_mine";
 	$dbo=new dbex;
   dbplugin('w');
   if(intval($to_user_id)){
@@ -57,17 +56,10 @@ function message_set_affair($id,$title,$content,$show_type_id,$mod_type,$to_user
 	}
 	$title=htmlspecialchars_decode($title);
 	$content=htmlspecialchars_decode($content);
-	if($id){
-		$sql="delete from $t_recent_affair where for_content_id=$id and mod_type=$mod_type and user_id=$uid";
-		$dbo->exeUpdate($sql);
-	}
-	$sql=" insert into $t_recent_affair (title,content,user_id,user_name,user_ico,date_time,update_time,type_id,mod_type,for_content_id) values ('$title','$content',$uid,'$uname','$userico','".constant('NOWTIME')."','".constant('NOWTIME')."',$show_type_id,$mod_type,$id) ";
-	$result=$dbo->exeUpdate($sql);
-	if($result){
-		$active_time=NOWTIME;
-		$sql="update $t_mypals set active_time='$active_time' where pals_id=$uid";
-		return $dbo->exeUpdate($sql);
-	}
+	$sql="delete from $t_recent_affair where for_content_id=$id and mod_type=$mod_type and user_id=$uid";
+	$dbo->exeUpdate($sql);
+	$sql=" insert into $t_recent_affair (title,content,user_id,user_name,user_ico,date_time,update_time,type_id,mod_type,for_content_id) values ('$title','$content',$uid,'$uname','$userico',NOW(),NOW(),$show_type_id,$mod_type,$id) ";
+	return $dbo->exeUpdate($sql);
 }
 
 function message_set_remind($touid,$content,$link,$type,$is_focus){
@@ -88,9 +80,9 @@ function message_set_remind($touid,$content,$link,$type,$is_focus){
 	$sql_check=" select id from $t_remind where user_id=$touid $update_con ";
 	$is_set=$dbo->getRow($sql_check);
 	if(empty($is_set)){
-		$sql=" insert into $t_remind (user_id,type_id,date,content,is_focus,from_uid,from_uname,from_uico,link) values ($touid,$type,'".constant('NOWTIME')."','$content',$is_focus,$uid,'$uname','$userico','$link') ";
+		$sql=" insert into $t_remind (user_id,type_id,date,content,is_focus,from_uid,from_uname,from_uico,link) values ($touid,$type,NOW(),'$content',$is_focus,$uid,'$uname','$userico','$link') ";
 	}else{
-		$sql=" update $t_remind set count = count+1,date = '".constant('NOWTIME')."' where user_id = $touid $update_con ";
+		$sql=" update $t_remind set count = count+1,date = NOW() where user_id = $touid $update_con ";
 	}
 	return $dbo->exeUpdate($sql);
 }

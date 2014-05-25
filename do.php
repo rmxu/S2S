@@ -48,7 +48,6 @@ $actArray=array(
     "user_del_hi"=> array('action/users/user_del_hi.action.php'),
     "user_forget"=> array('action/users/user_forget.action.php'),
     "user_dress_change"=> array('action/users/user_dressup.action.php'),
-	"user_activation" => array("action/users/user_activation.action.php"),
 
     "mood_add"=> array('action/mood/mood_add.action.php'),
     "mood_del"=> array('action/mood/mood_del.action.php'),
@@ -70,7 +69,7 @@ $actArray=array(
     "blog_sort_add" => array('action/blog/blog_sort_add.action.php'),
     "blog_sort_del" => array('action/blog/blog_sort_del.action.php','modules.php?app=blog_manager_sort'),
     "blog_sort_change" => array('action/blog/blog_sort_change.action.php'),
-	
+
     "upload_act" => array('action/pubtools/upload.action.php'),
 
     "pr_access" => array('action/privacy/home_access_set.action.php'),
@@ -95,36 +94,9 @@ $actArray=array(
     "message_del" => array('action/message/message_del.action.php'),
     "add_app" => array('action/userapp/add_app.action.php'),
     "del_app" => array('action/userapp/del_app.action.php'),
-	
-	"event_add" => array('action/event/event_add.action.php','modules.php?app=event'),
-    "event_edit" => array('action/event/event_edit.action.php','modules.php?app=event'),
-	"event_join" => array('action/event/event_join.action.php','modules.php?app=event_all'),
-	"event_del_member" => array('action/event/event_del_member.action.php','modules.php?app=event'),
-	"event_appoint" => array('action/event/event_appoint.action.php','modules.php?app=event'),
-	"event_revoke" => array('action/event/event_revoke.action.php','modules.php?app=event'),
-	"event_approve" => array('action/event/event_approve.action.php','modules.php?app=event'),
-	"event_del_req" => array('action/event/event_del_req.action.php','modules.php?app=event'),
-	"event_invite" => array('action/event/event_invite.action.php','modules.php?app=event'),
-	"event_exit" => array('action/event/event_exit.action.php','modules.php?app=event'),
-	"event_drop" => array('action/event/event_drop.action.php','modules.php?app=event'),
-	"event_follow" => array('action/event/event_follow.action.php','modules.php?app=event'),
-	"event_follow_cancel" => array('action/event/event_follow_cancel.action.php','modules.php?app=event'),
-	"event_upload_photo" => array('action/event/event_upload_photo.action.php'),
-	"event_update_photo" => array('action/event/event_update_photo.action.php'),
-	"event_del_photo" => array('action/event/event_del_photo.action.php'),
-	"event_im_photo" => array('action/event/event_im_photo.action.php'),
-	"event_edit_apply" => array('action/event/event_edit_apply.action.php','modules.php?app=event'),
-	
-	"ask_add" => array('action/ask/ask_add.action.php'),
-	"ask_edit" => array('action/ask/ask_edit.action.php'),
-	"ask_reply_add" => array('action/ask/ask_reply_add.action.php'),
-	"ask_reply_del" => array('action/ask/ask_reply_del.action.php'),
-	"ask_reply_edit" => array('action/ask/ask_reply_edit.action.php'),
-	"ask_set_answer" => array('action/ask/ask_set_answer.action.php'),
-
 );
 $actId=getActId();
-$free_act_array=array("login","reg","logout","pr_access_login","photo_upl_flash","user_forget","user_pw_change","user_activation");
+$free_act_array=array("login","reg","logout","pr_access_login","photo_upl_flash","user_forget","user_pw_change");
 //除必须登录才能访问文件
 if(!in_array($actId,$free_act_array)){
 	limit_time($limit_action_time);

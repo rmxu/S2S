@@ -4,7 +4,6 @@
 	
 	require("foundation/module_affair.php");
 	require("api/base_support.php");
-	require("foundation/ftag.php");
 
 	//变量取得
 	$album_id=intval(get_argg('album_id'));
@@ -17,25 +16,25 @@
 	$t_photo_comment = $tablePreStr."photo_comment";
 	$t_album_comment = $tablePreStr."album_comment";
 
-	$photo_rs = api_proxy("album_photo_by_aid","*",$album_id);
-	$album_info = api_proxy("album_self_by_aid","tag",$album_id);
-	$tag=$album_info['tag'];
-	
 	$dbo = new dbex;
+	//读写分离定义方法
+	dbtarget('r',$dbServs);
+
+	$photo_rs = api_proxy("album_photo_by_aid","*",$album_id);
+
 	dbtarget('w',$dbServs);
 	$photo_num=0;
-	if ($photo_rs){
-		foreach($photo_rs as $val){
-			@unlink($val['photo_src']);
-			@unlink($val['photo_thumb_src']);
-	
-			//删除照片相关评论
-			$photo_id = $val['photo_id'];
-			$sql = "delete from $t_photo_comment where photo_id =$photo_id and user_id=$user_id";
-			$dbo -> exeUpdate($sql);
-			$photo_num++;
-		}
+	foreach($photo_rs as $val){
+		@unlink($val['photo_src']);
+		@unlink($val['photo_thumb_src']);
+
+		//删除照片相关评论
+		$photo_id = $val['photo_id'];
+		$sql = "delete from $t_photo_comment where photo_id =$photo_id and user_id=$user_id";
+		$dbo -> exeUpdate($sql);
+		$photo_num++;
 	}
+
 	//删除相册有关照片
 	$sql = "delete from $t_photo where album_id=$album_id and user_id=$user_id";
 	$dbo -> exeUpdate($sql);
@@ -48,7 +47,6 @@
 	$sql="delete from $t_album where album_id=$album_id and user_id=$user_id";
 
 	if($dbo -> exeUpdate($sql)){
-		tag_del($tag,$album_id,1);
 	  del_affair($dbo,2,$album_id);
 	}
 	//回应信息

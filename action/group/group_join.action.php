@@ -64,7 +64,7 @@ if($group_row['group_join_type']==0){
 	$sql="update $t_users set join_group='$user_join_group' where user_id=$user_id";
 	$dbo->exeUpdate($sql);
 	//插入群组关系表
-	$sql="insert into $t_group_members (group_id,user_id,user_name,user_sex,state,role,add_time,user_ico) values ($group_id,$user_id,'$user_name','$user_sex',1,2,'".constant('NOWTIME')."','$userico')";
+	$sql="insert into $t_group_members (group_id,user_id,user_name,user_sex,state,role,add_time,user_ico) values ($group_id,$user_id,'$user_name','$user_sex',1,2,NOW(),'$userico')";
 	if($dbo->exeUpdate($sql)){
 		//增加群组人数
 		$sql="update $t_groups set member_count=member_count+1 where group_id=$group_id";
@@ -87,7 +87,7 @@ if($group_row['group_join_type']==1){
 	$g_req_id=empty($group_row['group_req_id'])?",".$user_id.",":$group_row['group_req_id'].$user_id.",";
 	$sql="update $t_groups set group_req_id='$g_req_id' where group_id=$group_id";
 	$dbo->exeUpdate($sql);
-	$sql="insert into $t_group_members(group_id,user_id,user_name,user_sex,state,role,add_time,user_ico) values($group_id,$user_id,'$user_name','$user_sex',0,2,'".constant('NOWTIME')."','$userico')";
+	$sql="insert into $t_group_members(group_id,user_id,user_name,user_sex,state,role,add_time,user_ico) values($group_id,$user_id,'$user_name','$user_sex',0,2,NOW(),'$userico')";
 	$dbo->exeUpdate($sql);
 	$g_manager=api_proxy("group_member_manager","user_id",$group_id);
 	foreach($g_manager as $val){

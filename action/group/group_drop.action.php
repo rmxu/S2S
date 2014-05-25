@@ -4,7 +4,6 @@ $g_langpackage=new grouplp;
 
 require("foundation/module_affair.php");
 require("api/base_support.php");
-require("foundation/ftag.php");
 
 //变量区
 $user_id=get_sess_userid();
@@ -13,7 +12,7 @@ $creat_group=get_sess_cgroup();
 $join_group=get_sess_jgroup();
 
 //权限判断
-if(!strpos(",,$creat_group,",",$group_id,")){
+if(!preg_match("/,$group_id,/",$creat_group)){
 	action_return(0,"$g_langpackage->g_no_privilege","-1");
 }
 
@@ -33,7 +32,7 @@ if(!strpos(",,$creat_group,",",$group_id,")){
 	$my_c_group=preg_replace("/,$group_id,/",",",$my_creat_group['creat_group']);
 
 //读取群组数据
-  $group_data = api_proxy("group_self_by_gid","group_logo,tag",$group_id);
+  $group_data = api_proxy("group_self_by_gid","group_logo",$group_id);
 
 //卸载群组logo
 	@unlink($group_data['group_logo']);
@@ -63,8 +62,6 @@ if(!strpos(",,$creat_group,",",$group_id,")){
 
 //更新session
 set_sess_cgroup($my_c_group);
-$tag=$group_data['tag'];
 del_affair($dbo,1,$group_id);
-tag_del($tag,$group_id,2);
 action_return(1,'',"");
 ?>

@@ -17,7 +17,7 @@ function change_exp($content,$c_array=0){
 	}
 	$array=array_combine($key_array,$value_array);
 	foreach($array as $key => $value){
-		$content=preg_replace("/(\\$$key)\s*=\s*([^;]*)/","\$1=$value",$content);
+		$content=preg_replace("/(\\$$key)=([^;]+)/","\$1=$value",$content);
 	}
 	return $content;
 }

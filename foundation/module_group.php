@@ -68,12 +68,12 @@ function group_state($g_id,$g_type,$u_creat_group,$u_join_group,$g_req){
 	$str="<a href='javascript:void(0)' onclick=join_group($g_id);>".$lp_join_group."</a>";
 	if($g_type==2){$str="<font color='red'>".$lp_type_refuse."</font>";}
 	else if(strpos(",$u_join_group",",$g_id,")||strpos(",$u_creat_group",",$g_id,")){$str=$lp_g_repeat;}
-	else if(strpos(",,".$g_req.",",",$user_id,")){$str=$lp_rep_reg;}
+	else if(preg_match("/,$user_id,/",$g_req)){$str=$lp_rep_reg;}
 	echo $str;
 }
 
 function get_group_manager($manager_name){
-	if(($manager_name=="")||($manager_name=="|")){
+	if($manager_name==""||"|"){
 		echo "无";
 	}else{
 		echo $manager_name;
@@ -108,11 +108,11 @@ function show_manage_act($group_creat,$u_role,$g_id){
 		$b_del="";$b_app="content_none";$b_rev="content_none";
 		$manage_act=array("b_del" => $b_del,"b_app" => $b_app,"b_rev" => $b_rev);
 		}
-	if(strpos(",,".$group_creat.",",",$g_id,")&&$u_role==2){
+	if(preg_match("/,$g_id,/",$group_creat)&&$u_role==2){
 		$b_del="";$b_app="";$b_rev="content_none";
 		$manage_act=array("b_del" => $b_del,"b_app" => $b_app,"b_rev" => $b_rev);
 		}
-	if(strpos(",,".$group_creat.",",",$g_id,")&&$u_role==1){
+	if(preg_match("/,$g_id,/",$group_creat)&&$u_role==1){
 		$b_del="content_none";$b_app="content_none";$b_rev="";
 		$manage_act=array("b_del" => $b_del,"b_app" => $b_app,"b_rev" => $b_rev);
 		}
@@ -138,7 +138,7 @@ function show_action($creator,$member_num,$manager){
 
 function is_member($g_id,$u_join,$u_creat){
 	$action_show="content_none";
-	if(!strpos(",,".$u_join.",",",$g_id,")&&!strpos(",,".$u_creat.",",",$g_id,")){
+	if(!preg_match("/,$g_id,/",$u_join)&&!preg_match("/,$g_id,/",$u_creat)){
 		$action_show="";
 		}
 	return $action_show;

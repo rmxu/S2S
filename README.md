@@ -1,6 +1,4 @@
 S2S
 =======
 
-'S2S' means school to society, it is
-a platform helps students undertand society
-a bridge connects students to society
+'S2S' means school to society. It is a platform that helps students undertand society, and more importantly, a bridge that connects students to society
